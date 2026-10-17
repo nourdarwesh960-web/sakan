@@ -11,40 +11,17 @@ import {
   HelpCircle,
   Building,
   Key,
-  Compass,
-  AlertTriangle
+  Compass
 } from 'lucide-react';
-import { getPublishedListings, isSupabaseConfigured } from '@/lib/data-service';
+import { getPublishedListings } from '@/lib/data-service';
 import ListingCard from '@/components/ListingCard';
 import { EGYPT_GOVERNORATES } from '@/types/database';
 
 export default async function HomePage() {
   const { listings, total } = await getPublishedListings({ limit: 6 });
-  const supabaseConfigured = isSupabaseConfigured();
 
   return (
     <div className="space-y-16 pb-12">
-      
-      {/* Missing configuration notice banner if Supabase credentials are placeholder */}
-      {!supabaseConfigured && (
-        <div className="bg-amber-50 border-b border-amber-200 px-4 py-3 text-amber-900 text-xs sm:text-sm">
-          <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
-              <span>
-                <strong>وضع المعاينة المحلي:</strong> مفاتيح Supabase قيد الإعداد. التطبيق يعمل حالياً ببيانات تجريبية آمنة دون الاتصال بالسحابة. قم بتعيين المتغيرات في <code className="bg-amber-100 px-1.5 py-0.5 rounded font-mono">.env.local</code> للتفعيل الكامل.
-              </span>
-            </div>
-            <Link 
-              href="/docs/deployment" 
-              className="font-bold underline hover:text-amber-700 whitespace-nowrap"
-            >
-              تعليمات الربط
-            </Link>
-          </div>
-        </div>
-      )}
-
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-stone-100/80 via-white to-transparent pt-12 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
