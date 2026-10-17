@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { MapPin, Bed, Bath, Sparkles, ShieldCheck } from 'lucide-react';
+import { MapPin, Bed, Bath, ShieldCheck } from 'lucide-react';
 import { Listing } from '@/types/database';
 import { formatCurrencyEGP, HOUSING_TYPE_LABELS, OCCUPANT_LABELS, GENDER_LABELS } from '@/lib/utils';
 
@@ -32,8 +32,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
             {HOUSING_TYPE_LABELS[listing.housing_type] || listing.housing_type}
           </span>
           {listing.furnished && (
-            <span className="bg-amber-600/90 backdrop-blur text-white text-xs px-2 py-1 rounded-lg font-medium shadow-sm flex items-center gap-1">
-              <Sparkles className="w-3 h-3" />
+            <span className="bg-stone-900/80 backdrop-blur text-white text-xs px-2.5 py-1 rounded-lg font-medium shadow-sm">
               مفروش
             </span>
           )}

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { 
   Users, 
   Key, 
+  Check, 
   CheckCircle2, 
   ArrowLeft, 
   Search, 
@@ -60,8 +61,9 @@ export default function OnboardingPage() {
               طالب جامعي أو موظف مغترب أبحث عن غرفة، سرير في سكن شباب/بنات، أو استوديو مستقل بدون دفع عمولات لسماسرة.
             </p>
           </div>
-          <span className="mt-4 text-xs font-bold text-[#0F2942] flex items-center gap-1">
-            {selectedRole === 'seeker' ? '✓ تم الاختيار' : 'تحديد هذا الخيار'}
+          <span className="mt-4 text-xs font-bold text-[#0F2942] inline-flex items-center gap-1.5">
+            {selectedRole === 'seeker' && <Check className="w-3.5 h-3.5" />}
+            {selectedRole === 'seeker' ? 'تم الاختيار' : 'تحديد هذا الخيار'}
           </span>
         </button>
 
@@ -83,8 +85,9 @@ export default function OnboardingPage() {
               صاحب شقة أو غرفة أو سرير متاح، وأريد تأجيره لطلبة أو موظفين جادين ومحترمين مباشرة وبدون وسيط.
             </p>
           </div>
-          <span className="mt-4 text-xs font-bold text-[#0F2942] flex items-center gap-1">
-            {selectedRole === 'provider' ? '✓ تم الاختيار' : 'تحديد هذا الخيار'}
+          <span className="mt-4 text-xs font-bold text-[#0F2942] inline-flex items-center gap-1.5">
+            {selectedRole === 'provider' && <Check className="w-3.5 h-3.5" />}
+            {selectedRole === 'provider' ? 'تم الاختيار' : 'تحديد هذا الخيار'}
           </span>
         </button>
 

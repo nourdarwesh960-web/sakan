@@ -6,7 +6,6 @@ import {
   ShieldCheck, 
   CheckCircle2, 
   ArrowLeft, 
-  Sparkles, 
   Home, 
   Users, 
   HelpCircle,
@@ -58,7 +57,7 @@ export default async function HomePage() {
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#0F2942] tracking-tight leading-[1.15]">
               دور على سكنك، <br />
-              <span className="text-[#0A3A40] underline decoration-amber-500/60 decoration-wavy decoration-2">
+              <span className="text-[#0A3A40]">
                 من غير عمولات.
               </span>
             </h1>
@@ -194,9 +193,8 @@ export default async function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <div className="inline-flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded mb-1">
-              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-              محدث باستمرار
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-stone-700 bg-stone-100 px-2.5 py-0.5 rounded-md mb-1">
+              <span>تحديث دوري ومستمر</span>
             </div>
             <h2 className="text-2xl font-black text-[#0F2942]">أحدث الإعلانات المتاحة</h2>
             <p className="text-sm text-stone-500">سكن حقيقي موثق من أصحاب العقارات وبدون عمولة سمسار</p>

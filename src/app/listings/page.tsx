@@ -8,8 +8,7 @@ import {
   MapPin, 
   Bed, 
   Check, 
-  RotateCcw,
-  Sparkles
+  RotateCcw
 } from 'lucide-react';
 import { getPublishedListings } from '@/lib/data-service';
 import ListingCard from '@/components/ListingCard';

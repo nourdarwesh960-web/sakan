@@ -7,9 +7,8 @@ import {
   PlusCircle, 
   MapPin, 
   DollarSign, 
-  Bed, 
   Calendar, 
-  Sparkles, 
+  X, 
   PauseCircle, 
   PlayCircle, 
   Trash2, 
@@ -159,7 +158,7 @@ export default function WantedRequestsPage() {
                     <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-bold ${
                       req.is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-stone-100 text-stone-600'
                     }`}>
-                      {req.is_active ? '● التنبيه الفوري نشط' : '○ موقوف مؤقتاً'}
+                      {req.is_active ? 'التنبيه الفوري نشط' : 'موقوف مؤقتاً'}
                     </span>
                     <span className="text-xs text-stone-400">
                       تاريخ التسجيل: {formatDateArabic(req.created_at)}
@@ -243,9 +242,10 @@ export default function WantedRequestsPage() {
               </h3>
               <button
                 onClick={() => setShowModal(false)}
-                className="text-stone-400 hover:text-stone-700 text-sm font-bold"
+                className="text-stone-400 hover:text-stone-700 p-1 rounded-lg transition"
+                title="إغلاق"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
 

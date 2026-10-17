@@ -10,7 +10,8 @@ import {
   Bed, 
   Bath, 
   Calendar, 
-  Sparkles, 
+  FileText, 
+  Check, 
   CheckCircle2, 
   AlertCircle, 
   Upload, 
@@ -416,7 +417,7 @@ export default function NewListingPage() {
         {/* Section 4: Title & Description */}
         <div className="space-y-4">
           <h2 className="text-base font-bold text-stone-900 pb-2 border-b border-stone-100 flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[#0F2942]" />
+            <FileText className="w-4 h-4 text-[#0F2942]" />
             ٤. عنوان ووصف السكن
           </h2>
 
@@ -448,20 +449,24 @@ export default function NewListingPage() {
           <div>
             <label className="text-xs font-bold text-stone-700 block mb-2">المرافق والخدمات المتوفرة:</label>
             <div className="flex flex-wrap gap-2">
-              {AMENITY_OPTIONS.map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  onClick={() => toggleAmenity(item)}
-                  className={`text-xs px-3 py-1.5 rounded-xl border transition ${
-                    selectedAmenities.includes(item)
-                      ? 'bg-[#0F2942] text-white border-[#0F2942]'
-                      : 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100'
-                  }`}
-                >
-                  {selectedAmenities.includes(item) ? `✓ ${item}` : item}
-                </button>
-              ))}
+              {AMENITY_OPTIONS.map((item) => {
+                const isSelected = selectedAmenities.includes(item);
+                return (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => toggleAmenity(item)}
+                    className={`text-xs px-3 py-1.5 rounded-xl border transition inline-flex items-center gap-1.5 ${
+                      isSelected
+                        ? 'bg-[#0F2942] text-white border-[#0F2942]'
+                        : 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100'
+                    }`}
+                  >
+                    {isSelected && <Check className="w-3.5 h-3.5" />}
+                    <span>{item}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>

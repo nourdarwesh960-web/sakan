@@ -5,6 +5,8 @@ import {
   AlertTriangle, 
   CheckCircle2, 
   XCircle, 
+  Check, 
+  X, 
   Eye, 
   FileText, 
   DollarSign, 
@@ -39,20 +41,20 @@ export default function SafetyPage() {
           </div>
           <h2 className="text-lg font-bold text-stone-900">ما نضمنه لك في سَكَن:</h2>
           <ul className="space-y-3 text-xs sm:text-sm text-stone-600">
-            <li className="flex gap-2">
-              <span className="text-emerald-600 font-bold">✓</span>
+            <li className="flex items-start gap-2.5">
+              <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
               <span><strong>بدون أي عمولات:</strong> المنصة مجانية ١٠٠٪ ولا نتقاضى أي نسبة من الإيجار.</span>
             </li>
-            <li className="flex gap-2">
-              <span className="text-emerald-600 font-bold">✓</span>
+            <li className="flex items-start gap-2.5">
+              <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
               <span><strong>تواصل مباشر:</strong> التحدث مباشرة مع صاحب السكن أو المؤجر الفعلي.</span>
             </li>
-            <li className="flex gap-2">
-              <span className="text-emerald-600 font-bold">✓</span>
+            <li className="flex items-start gap-2.5">
+              <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
               <span><strong>شفافية الأسعار:</strong> لا توجد رسوم خفية أو مصاريف معاينة غير معلنة.</span>
             </li>
-            <li className="flex gap-2">
-              <span className="text-emerald-600 font-bold">✓</span>
+            <li className="flex items-start gap-2.5">
+              <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
               <span><strong>رقابة صارمة:</strong> حظر فوري لأي سمسار يطلب عمولة أو يحاول استغلال الطلبة.</span>
             </li>
           </ul>
@@ -64,20 +66,20 @@ export default function SafetyPage() {
           </div>
           <h2 className="text-lg font-bold text-stone-900">ممنوعات لا تتهاون فيها أبداً:</h2>
           <ul className="space-y-3 text-xs sm:text-sm text-stone-600">
-            <li className="flex gap-2">
-              <span className="text-rose-600 font-bold">✕</span>
-              <span><strong>لا تحول عربون مسبق:</strong> إياك وتحويل أي مبالغ عبر فودافون كاش أو إنستاباي قبل المعاينة.</span>
+            <li className="flex items-start gap-2.5">
+              <X className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+              <span><strong>لا تحول عربون مسبق:</strong> إياك وتحويل أي مبالغ عبر المحافظ الإلكترونية أو إنستاباي قبل المعاينة.</span>
             </li>
-            <li className="flex gap-2">
-              <span className="text-rose-600 font-bold">✕</span>
+            <li className="flex items-start gap-2.5">
+              <X className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
               <span><strong>لا تدفع رسوم معاينة:</strong> المعاينة حق مشروع لك بدون دفع أي جنيه لصاحب الشقة.</span>
             </li>
-            <li className="flex gap-2">
-              <span className="text-rose-600 font-bold">✕</span>
+            <li className="flex items-start gap-2.5">
+              <X className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
               <span><strong>لا تقبل بدفع عمولة:</strong> إذا طلب منك المعلن عمولة سمسرة، فهو منتهك لقواعد سَكَن.</span>
             </li>
-            <li className="flex gap-2">
-              <span className="text-rose-600 font-bold">✕</span>
+            <li className="flex items-start gap-2.5">
+              <X className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
               <span><strong>لا تسلم أموال بدون عقد:</strong> لا تدفع الإيجار أو التأمين إلا بعد استلام نسخة عقد الإيجار الموقع.</span>
             </li>
           </ul>

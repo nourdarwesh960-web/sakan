@@ -12,7 +12,8 @@ import {
   ScrollText, 
   ArrowRight,
   LogOut,
-  Sliders
+  Sliders,
+  FileSpreadsheet
 } from 'lucide-react';
 
 export default function AdminLayout({
@@ -24,6 +25,7 @@ export default function AdminLayout({
 
   const NAV_ITEMS = [
     { href: '/admin', label: 'نظرة عامة والمؤشرات', icon: <LayoutDashboard className="w-4 h-4" /> },
+    { href: '/admin/sheet', label: 'شيت الرقابة المركزي (Master Sheet)', icon: <FileSpreadsheet className="w-4 h-4 text-emerald-400" /> },
     { href: '/admin/listings', label: 'مراجعة وتدقيق الإعلانات', icon: <Building className="w-4 h-4" /> },
     { href: '/admin/complaints', label: 'إدارة الشكاوى والسماسرة', icon: <Flag className="w-4 h-4" /> },
     { href: '/admin/users', label: 'المستخدمين والحسابات', icon: <Users className="w-4 h-4" /> },
@@ -50,6 +52,14 @@ export default function AdminLayout({
         </div>
 
         <div className="flex items-center gap-3 text-xs text-stone-300">
+          <Link
+            href="/admin/sheet"
+            className="px-2.5 py-1 bg-emerald-600/80 hover:bg-emerald-600 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5" />
+            <span>فتح الشيت المركزي</span>
+          </Link>
+          <span className="text-stone-500">|</span>
           <span>المسؤول: مشرف النظام</span>
         </div>
       </header>

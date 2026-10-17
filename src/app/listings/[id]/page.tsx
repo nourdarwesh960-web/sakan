@@ -10,7 +10,6 @@ import {
   MessageSquare, 
   Phone, 
   Flag, 
-  Sparkles, 
   User, 
   CheckCircle2, 
   ArrowRight,
@@ -69,8 +68,7 @@ export default async function ListingDetailsPage({ params }: ListingDetailsPageP
               {HOUSING_TYPE_LABELS[listing.housing_type] || listing.housing_type}
             </span>
             {listing.furnished && (
-              <span className="bg-amber-100 text-amber-800 text-xs px-2.5 py-1 rounded-lg font-bold flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+              <span className="bg-stone-100 text-stone-800 text-xs px-2.5 py-1 rounded-lg font-bold">
                 مفروش
               </span>
             )}

@@ -53,9 +53,8 @@ export default function Header() {
                 href="/wanted-requests" 
                 className="px-3 py-2 rounded-lg hover:bg-stone-100 hover:text-[#0F2942] transition flex items-center gap-1.5"
               >
-                <Compass className="w-4 h-4 text-amber-600" />
+                <Compass className="w-4 h-4 text-[#0F2942]" />
                 <span>دوّرلي على سكن</span>
-                <span className="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-full font-bold">جديد</span>
               </Link>
               <Link 
                 href="/safety" 

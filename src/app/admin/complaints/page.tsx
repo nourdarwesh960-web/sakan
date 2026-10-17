@@ -8,6 +8,7 @@ import {
   Clock, 
   CheckCircle2, 
   XCircle, 
+  X, 
   AlertCircle, 
   Paperclip, 
   FileText, 
@@ -170,9 +171,10 @@ export default function AdminComplaintsPage() {
               </h3>
               <button
                 onClick={() => setSelectedComplaint(null)}
-                className="text-stone-400 hover:text-stone-700 text-sm font-bold"
+                className="text-stone-400 hover:text-stone-700 p-1 rounded-lg transition"
+                title="إغلاق"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
 

@@ -11,7 +11,6 @@ import {
   CheckCircle2, 
   AlertCircle, 
   MapPin, 
-  Sparkles,
   ShieldCheck 
 } from 'lucide-react';
 import { Listing } from '@/types/database';
