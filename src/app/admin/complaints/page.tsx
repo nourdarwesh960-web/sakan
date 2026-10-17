@@ -20,38 +20,7 @@ import { formatDateArabic } from '@/lib/utils';
 import { logAdminAction } from '@/lib/data-service';
 
 export default function AdminComplaintsPage() {
-  const [complaints, setComplaints] = useState<Complaint[]>([
-    {
-      id: 'comp-101',
-      reporter_id: 'user-seeker-1',
-      reported_user_id: 'user-broker-suspect',
-      listing_id: 'listing-suspect-broker',
-      category: 'brokerage_commission',
-      description: 'المعلن أصر في رسائل الشات على دفع عمولة شهر كامل (8000 ج.م) وأرسل رقم محفظة فودافون كاش لتحويل عربون المعاينة.',
-      status: 'submitted',
-      created_at: '2026-10-16T10:00:00.000Z',
-      updated_at: '2026-10-16T12:00:00.000Z',
-      evidence: [
-        {
-          id: 'ev-1',
-          complaint_id: 'comp-101',
-          file_url: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80',
-          file_type: 'image/jpeg',
-          created_at: '2026-10-16T10:00:00.000Z',
-        }
-      ]
-    },
-    {
-      id: 'comp-102',
-      reporter_id: 'user-seeker-2',
-      reported_user_id: 'user-provider-unverified',
-      category: 'fake_listing',
-      description: 'الصور المعروضة في الإعلان غير مطابقة للشقة على الطبيعة عند المعاينة.',
-      status: 'under_review',
-      created_at: '2026-10-15T09:00:00.000Z',
-      updated_at: '2026-10-16T12:00:00.000Z',
-    }
-  ]);
+  const [complaints, setComplaints] = useState<Complaint[]>([]);
 
   const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null);
   const [internalNote, setInternalNote] = useState('');
@@ -95,12 +64,21 @@ export default function AdminComplaintsPage() {
       </div>
 
       {/* Complaints List */}
-      <div className="grid grid-cols-1 gap-4">
-        {complaints.map((c) => (
-          <div
-            key={c.id}
-            className="bg-white rounded-2xl border border-stone-200 p-5 space-y-4 shadow-xs"
-          >
+      {complaints.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-stone-200 p-12 text-center max-w-md mx-auto space-y-3">
+          <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto" />
+          <h3 className="text-base font-bold text-stone-900">طابور الفحص نظيف تماماً</h3>
+          <p className="text-xs text-stone-500 leading-relaxed">
+            لا توجد بلاغات أو شكاوى مخالفة معلقة حالياً في النظام.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4">
+          {complaints.map((c) => (
+            <div
+              key={c.id}
+              className="bg-white rounded-2xl border border-stone-200 p-5 space-y-4 shadow-xs"
+            >
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <span className="bg-rose-100 text-rose-800 text-xs px-2.5 py-0.5 rounded-full font-bold">
@@ -159,6 +137,7 @@ export default function AdminComplaintsPage() {
           </div>
         ))}
       </div>
+      )}
 
       {/* Decision Modal */}
       {selectedComplaint && (

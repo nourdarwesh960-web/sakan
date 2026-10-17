@@ -24,7 +24,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ar" dir="rtl" className="h-full">
-      <body className="min-h-full flex flex-col bg-[#FBFBFD] text-stone-900 antialiased selection:bg-amber-100 selection:text-amber-900">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="min-h-full flex flex-col bg-[#FBFBFD] text-stone-900 antialiased selection:bg-amber-100 selection:text-amber-900 font-['Cairo',sans-serif]">
         <Header />
         <main className="flex-1">
           {children}

@@ -17,75 +17,7 @@ import { formatCurrencyEGP, formatDateArabic, HOUSING_TYPE_LABELS, STATUS_LABELS
 import { logAdminAction } from '@/lib/data-service';
 
 export default function AdminListingsPage() {
-  const [listings, setListings] = useState<Listing[]>([
-    {
-      id: 'listing-cairo-1',
-      owner_id: 'user-ahmed-1',
-      title: 'غرفة سنجل هادئة ومفروشة بالكامل قرب مترو الدقي',
-      description: 'غرفة ممتازة للطلبة أو الموظفين، في شقة راقية وهادئة جداً.',
-      governorate: 'الجيزة',
-      area: 'الدقي',
-      housing_type: 'room',
-      eligible_occupants: 'both',
-      gender_preference: 'male',
-      monthly_rent: 2800,
-      deposit: 2800,
-      utilities_cost: 0,
-      furnished: true,
-      available_from: '2026-10-15',
-      amenities: ['واي فاي سريع', 'مكيف هواء'],
-      status: 'published',
-      show_phone_publicly: false,
-      views_count: 142,
-      created_at: '2026-10-15T12:00:00.000Z',
-      updated_at: '2026-10-16T12:00:00.000Z',
-    },
-    {
-      id: 'listing-alex-2',
-      owner_id: 'user-sara-2',
-      title: 'استوديو مستقل مفروش ومكيف يرى البحر في لوران',
-      description: 'استوديو ممتاز ومستقل تماماً في الدور السادس بعمارة راقية مع مصعد حديث.',
-      governorate: 'الإسكندرية',
-      area: 'لوران',
-      housing_type: 'studio',
-      eligible_occupants: 'both',
-      gender_preference: 'female',
-      monthly_rent: 4200,
-      deposit: 4200,
-      utilities_cost: 300,
-      furnished: true,
-      available_from: '2026-10-16',
-      amenities: ['إطلالة بحر', 'مصعد'],
-      status: 'published',
-      show_phone_publicly: false,
-      views_count: 289,
-      created_at: '2026-10-14T11:00:00.000Z',
-      updated_at: '2026-10-16T12:00:00.000Z',
-    },
-    {
-      id: 'listing-suspect-broker',
-      owner_id: 'user-broker-suspect',
-      title: 'شقة مفروشة بالمعادي للايجار (مطلوب عمولة شهر)',
-      description: 'شقة فاخرة، مطلوب شهر تأمين وشهر إيجار وشهر عمولة مكتب تسويق.',
-      governorate: 'القاهرة',
-      area: 'المعادي',
-      housing_type: 'full_apartment',
-      eligible_occupants: 'both',
-      gender_preference: 'any',
-      monthly_rent: 8000,
-      deposit: 8000,
-      utilities_cost: 0,
-      furnished: true,
-      available_from: '2026-10-10',
-      amenities: ['مصعد'],
-      status: 'rejected',
-      rejection_reason: 'المعلن يطلب عمولة سمسرة بالمخالفة لميثاق سَكَن المجاني المباشر.',
-      show_phone_publicly: false,
-      views_count: 15,
-      created_at: '2026-10-12T09:00:00.000Z',
-      updated_at: '2026-10-16T12:00:00.000Z',
-    }
-  ]);
+  const [listings, setListings] = useState<Listing[]>([]);
 
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [rejectingListing, setRejectingListing] = useState<Listing | null>(null);
@@ -165,7 +97,14 @@ export default function AdminListingsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-stone-100">
-              {filtered.map((l) => (
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="p-8 text-center text-stone-400 text-xs">
+                    لا توجد إعلانات مطابقة للمراجعة حالياً
+                  </td>
+                </tr>
+              ) : (
+                filtered.map((l) => (
                 <tr key={l.id} className="hover:bg-stone-50/60 transition">
                   <td className="p-3.5 font-bold text-stone-900">
                     <Link href={`/listings/${l.id}`} className="hover:text-[#0A3A40] block line-clamp-1">
@@ -226,7 +165,7 @@ export default function AdminListingsPage() {
                     </div>
                   </td>
                 </tr>
-              ))}
+              )))}
             </tbody>
           </table>
         </div>

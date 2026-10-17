@@ -99,206 +99,12 @@ export default function MasterAdminSheetPage() {
   const [govFilter, setGovFilter] = useState('ALL');
   const [statusFilter, setStatusFilter] = useState('ALL');
 
-  // Operational State
-  const [users, setUsers] = useState<SheetUser[]>([
-    {
-      id: 'usr-101',
-      name: 'أحمد محمود إبراهيم',
-      phone: '+201012345678',
-      role: 'مضيف سكن (Provider)',
-      is_suspended: false,
-      suspension_reason: null,
-      created_at: '2026-10-14 10:30',
-      listings_count: 2,
-      complaints_against: 0,
-    },
-    {
-      id: 'usr-102',
-      name: 'كريم عبد العزيز سليم',
-      phone: '+201123456789',
-      role: 'مضيف سكن (مشتبه سمسار)',
-      is_suspended: false,
-      suspension_reason: null,
-      created_at: '2026-10-15 14:15',
-      listings_count: 4,
-      complaints_against: 2,
-    },
-    {
-      id: 'usr-103',
-      name: 'سارة مصطفى كمال',
-      phone: '+201234567890',
-      role: 'طالبة باحثة (Seeker)',
-      is_suspended: false,
-      suspension_reason: null,
-      created_at: '2026-10-15 18:00',
-      listings_count: 0,
-      complaints_against: 0,
-    },
-    {
-      id: 'usr-104',
-      name: 'مكتب الأهرام للخدمات العقارية',
-      phone: '+201509876543',
-      role: 'سمسار محظور',
-      is_suspended: true,
-      suspension_reason: 'طلب عمولة سمسرة من طلبة ومخالفة ميثاق الأمان',
-      created_at: '2026-10-13 09:10',
-      listings_count: 6,
-      complaints_against: 5,
-    },
-    {
-      id: 'usr-105',
-      name: 'محمود عبد الفتاح رضوان',
-      phone: '+201099887766',
-      role: 'مضيف سكن (Provider)',
-      is_suspended: false,
-      suspension_reason: null,
-      created_at: '2026-10-16 11:20',
-      listings_count: 1,
-      complaints_against: 0,
-    },
-  ]);
-
-  const [listings, setListings] = useState<SheetListing[]>([
-    {
-      id: 'lst-201',
-      title: 'غرفة سنجل هادئة ومفروشة بالكامل قرب مترو الدقي',
-      owner_name: 'أحمد محمود إبراهيم',
-      owner_phone: '+201012345678',
-      governorate: 'الجيزة',
-      area: 'الدقي',
-      housing_type: 'room',
-      monthly_rent: 2800,
-      deposit: 2800,
-      status: 'published',
-      views: 142,
-      created_at: '2026-10-15',
-    },
-    {
-      id: 'lst-202',
-      title: 'استوديو مستقل مفروش قرب جامعة الإسكندرية',
-      owner_name: 'إبراهيم علي خليل',
-      owner_phone: '+201201020304',
-      governorate: 'الإسكندرية',
-      area: 'الشاطبي',
-      housing_type: 'studio',
-      monthly_rent: 4200,
-      deposit: 4200,
-      status: 'published',
-      views: 98,
-      created_at: '2026-10-15',
-    },
-    {
-      id: 'lst-203',
-      title: 'سكن شباب مشترك بجوار جامعة القاهرة',
-      owner_name: 'أحمد محمود إبراهيم',
-      owner_phone: '+201012345678',
-      governorate: 'الجيزة',
-      area: 'بين السرايات',
-      housing_type: 'shared_apartment',
-      monthly_rent: 1400,
-      deposit: 1000,
-      status: 'published',
-      views: 310,
-      created_at: '2026-10-13',
-    },
-    {
-      id: 'lst-204',
-      title: 'شقة مفروشة ٣ غرف مدينة نصر الحي السابع',
-      owner_name: 'كريم عبد العزيز سليم',
-      owner_phone: '+201123456789',
-      governorate: 'القاهرة',
-      area: 'مدينة نصر',
-      housing_type: 'full_apartment',
-      monthly_rent: 8500,
-      deposit: 8500,
-      status: 'rejected',
-      views: 45,
-      created_at: '2026-10-16',
-    },
-    {
-      id: 'lst-205',
-      title: 'غرفة ماستر مكيفة بالمعادي قرب محطة المترو',
-      owner_name: 'محمود عبد الفتاح رضوان',
-      owner_phone: '+201099887766',
-      governorate: 'القاهرة',
-      area: 'المعادي',
-      housing_type: 'room',
-      monthly_rent: 3200,
-      deposit: 3000,
-      status: 'paused',
-      views: 65,
-      created_at: '2026-10-16',
-    },
-  ]);
-
-  const [complaints, setComplaints] = useState<SheetComplaint[]>([
-    {
-      id: 'cmp-301',
-      category: 'عمولة سمسرة (مخالفة ميثاق)',
-      status: 'submitted',
-      reporter_name: 'سارة مصطفى كمال',
-      accused_name: 'كريم عبد العزيز سليم',
-      accused_phone: '+201123456789',
-      description: 'أصر في الشات على طلب عمولة 2000 ج.م إضافية قبل معاينة الشقة في مدينة نصر',
-      evidence_url: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80',
-      created_at: '2026-10-16 15:40',
-    },
-    {
-      id: 'cmp-302',
-      category: 'طلب عربون معاينة مسبق',
-      status: 'resolved',
-      reporter_name: 'عمر خالد حسن',
-      accused_name: 'مكتب الأهرام للخدمات العقارية',
-      accused_phone: '+201509876543',
-      description: 'طلب تحويل 500 ج.م على فودافون كاش كرسوم معاينة للشقة',
-      evidence_url: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80',
-      created_at: '2026-10-13 11:00',
-    },
-  ]);
-
-  const [wantedRequests, setWantedRequests] = useState<SheetWanted[]>([
-    {
-      id: 'wnt-401',
-      seeker_name: 'سارة مصطفى كمال',
-      seeker_phone: '+201234567890',
-      governorate: 'الجيزة',
-      area: 'الدقي أو المهندسين',
-      housing_type: 'room',
-      budget_max: 3000,
-      is_active: true,
-      created_at: '2026-10-15',
-    },
-    {
-      id: 'wnt-402',
-      seeker_name: 'محمد أشرف طارق',
-      seeker_phone: '+201009988112',
-      governorate: 'القاهرة',
-      area: 'العباسية قرب عين شمس',
-      housing_type: 'shared_apartment',
-      budget_max: 1800,
-      is_active: true,
-      created_at: '2026-10-16',
-    },
-  ]);
-
-  const [auditLogs, setAuditLogs] = useState<SheetAudit[]>([
-    {
-      id: 'aud-501',
-      created_at: '2026-10-16 16:00:22',
-      actor: 'Super Admin (المالك)',
-      action: 'LISTING_STATUS_OVERRIDE',
-      target: 'lst-204',
-      details: 'رفض إعلان مدينة نصر لاشتباه السمسرة',
-    },
-    {
-      id: 'aud-502',
-      created_at: '2026-10-14 12:15:00',
-      actor: 'Super Admin (المالك)',
-      action: 'USER_SUSPENDED',
-      target: 'usr-104',
-      details: 'حظر حساب مكتب الأهرام وسحب 6 إعلانات',
-    },
-  ]);
+  // Operational State - Clean and free of any fake data
+  const [users, setUsers] = useState<SheetUser[]>([]);
+  const [listings, setListings] = useState<SheetListing[]>([]);
+  const [complaints, setComplaints] = useState<SheetComplaint[]>([]);
+  const [wantedRequests, setWantedRequests] = useState<SheetWanted[]>([]);
+  const [auditLogs, setAuditLogs] = useState<SheetAudit[]>([]);
 
   // KPIs
   const totalRentManaged = useMemo(() => {
@@ -630,53 +436,67 @@ export default function MasterAdminSheetPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-stone-100">
-                {users
-                  .filter((u) => {
-                    const matchQ =
-                      u.name.includes(searchQuery) ||
-                      u.phone.includes(searchQuery) ||
-                      u.id.includes(searchQuery);
-                    return matchQ;
-                  })
-                  .map((u) => (
-                    <tr key={u.id} className="hover:bg-stone-50/70 transition">
-                      <td className="p-3.5 font-mono text-stone-500">{u.id}</td>
-                      <td className="p-3.5 font-bold text-stone-900">{u.name}</td>
-                      <td className="p-3.5 font-mono text-stone-700" dir="ltr">{u.phone}</td>
-                      <td className="p-3.5 text-stone-600">{u.role}</td>
-                      <td className="p-3.5">
-                        <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
-                          u.is_suspended ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'
-                        }`}>
-                          {u.is_suspended ? 'محظور / مجمد' : 'نشط'}
-                        </span>
-                      </td>
-                      <td className="p-3.5 font-bold text-stone-900">{u.listings_count}</td>
-                      <td className="p-3.5 font-bold text-amber-700">{u.complaints_against}</td>
-                      <td className="p-3.5 text-center">
-                        <button
-                          onClick={() => toggleUserBan(u.id)}
-                          className={`px-3 py-1 rounded-lg font-bold text-xs transition inline-flex items-center gap-1 ${
-                            u.is_suspended
-                              ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
-                              : 'bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200'
-                          }`}
-                        >
-                          {u.is_suspended ? (
-                            <>
-                              <Unlock className="w-3 h-3" />
-                              <span>إلغاء الحظر</span>
-                            </>
-                          ) : (
-                            <>
-                              <Lock className="w-3 h-3" />
-                              <span>تجميد الحساب</span>
-                            </>
-                          )}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                {users.filter((u) => {
+                  const matchQ =
+                    u.name.includes(searchQuery) ||
+                    u.phone.includes(searchQuery) ||
+                    u.id.includes(searchQuery);
+                  return matchQ;
+                }).length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="p-8 text-center text-stone-400">
+                      لا يوجد مستخدمون مسجلون حالياً في النظام
+                    </td>
+                  </tr>
+                ) : (
+                  users
+                    .filter((u) => {
+                      const matchQ =
+                        u.name.includes(searchQuery) ||
+                        u.phone.includes(searchQuery) ||
+                        u.id.includes(searchQuery);
+                      return matchQ;
+                    })
+                    .map((u) => (
+                      <tr key={u.id} className="hover:bg-stone-50/70 transition">
+                        <td className="p-3.5 font-mono text-stone-500">{u.id}</td>
+                        <td className="p-3.5 font-bold text-stone-900">{u.name}</td>
+                        <td className="p-3.5 font-mono text-stone-700" dir="ltr">{u.phone}</td>
+                        <td className="p-3.5 text-stone-600">{u.role}</td>
+                        <td className="p-3.5">
+                          <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
+                            u.is_suspended ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'
+                          }`}>
+                            {u.is_suspended ? 'محظور / مجمد' : 'نشط'}
+                          </span>
+                        </td>
+                        <td className="p-3.5 font-bold text-stone-900">{u.listings_count}</td>
+                        <td className="p-3.5 font-bold text-amber-700">{u.complaints_against}</td>
+                        <td className="p-3.5 text-center">
+                          <button
+                            onClick={() => toggleUserBan(u.id)}
+                            className={`px-3 py-1 rounded-lg font-bold text-xs transition inline-flex items-center gap-1 ${
+                              u.is_suspended
+                                ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
+                                : 'bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200'
+                            }`}
+                          >
+                            {u.is_suspended ? (
+                              <>
+                                <Unlock className="w-3 h-3" />
+                                <span>إلغاء الحظر</span>
+                              </>
+                            ) : (
+                              <>
+                                <Lock className="w-3 h-3" />
+                                <span>تجميد الحساب</span>
+                              </>
+                            )}
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                )}
               </tbody>
             </table>
           )}
@@ -698,71 +518,86 @@ export default function MasterAdminSheetPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-stone-100">
-                {listings
-                  .filter((l) => {
-                    const matchQ =
-                      l.title.includes(searchQuery) ||
-                      l.owner_name.includes(searchQuery) ||
-                      l.area.includes(searchQuery);
-                    const matchGov = govFilter === 'ALL' || l.governorate === govFilter;
-                    return matchQ && matchGov;
-                  })
-                  .map((l) => (
-                    <tr key={l.id} className="hover:bg-stone-50/70 transition">
-                      <td className="p-3.5 font-mono text-stone-500">{l.id}</td>
-                      <td className="p-3.5 font-bold text-stone-900 max-w-xs truncate">
-                        <Link href={`/listings/${l.id}`} className="hover:text-amber-700">
-                          {l.title}
-                        </Link>
-                      </td>
-                      <td className="p-3.5">
-                        <div className="font-medium text-stone-900">{l.owner_name}</div>
-                        <div className="text-[10px] text-stone-400 font-mono" dir="ltr">{l.owner_phone}</div>
-                      </td>
-                      <td className="p-3.5 text-stone-600">{l.governorate}، {l.area}</td>
-                      <td className="p-3.5 text-stone-500">{HOUSING_TYPE_LABELS[l.housing_type] || l.housing_type}</td>
-                      <td className="p-3.5 font-bold text-[#0F2942]">{formatCurrencyEGP(l.monthly_rent)}</td>
-                      <td className="p-3.5">
-                        <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
-                          STATUS_LABELS[l.status]?.color || 'bg-stone-100 text-stone-600'
-                        }`}>
-                          {STATUS_LABELS[l.status]?.label || l.status}
-                        </span>
-                      </td>
-                      <td className="p-3.5 font-mono">{l.views}</td>
-                      <td className="p-3.5 text-center">
-                        <div className="inline-flex items-center gap-1">
-                          {l.status !== 'published' && (
-                            <button
-                              onClick={() => changeListingStatus(l.id, 'published')}
-                              className="px-2 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded text-[11px] font-bold"
-                              title="نشر فوري"
-                            >
-                              نشر
-                            </button>
-                          )}
-                          {l.status === 'published' && (
-                            <button
-                              onClick={() => changeListingStatus(l.id, 'paused')}
-                              className="px-2 py-1 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded text-[11px] font-bold"
-                              title="إيقاف مؤقت"
-                            >
-                              إيقاف
-                            </button>
-                          )}
-                          {l.status !== 'rejected' && (
-                            <button
-                              onClick={() => changeListingStatus(l.id, 'rejected')}
-                              className="px-2 py-1 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded text-[11px] font-bold"
-                              title="رفض الإعلان"
-                            >
-                              رفض
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                {listings.filter((l) => {
+                  const matchQ =
+                    l.title.includes(searchQuery) ||
+                    l.owner_name.includes(searchQuery) ||
+                    l.area.includes(searchQuery);
+                  const matchGov = govFilter === 'ALL' || l.governorate === govFilter;
+                  return matchQ && matchGov;
+                }).length === 0 ? (
+                  <tr>
+                    <td colSpan={9} className="p-8 text-center text-stone-400">
+                      لا توجد وحدات سكنية معروضة حالياً
+                    </td>
+                  </tr>
+                ) : (
+                  listings
+                    .filter((l) => {
+                      const matchQ =
+                        l.title.includes(searchQuery) ||
+                        l.owner_name.includes(searchQuery) ||
+                        l.area.includes(searchQuery);
+                      const matchGov = govFilter === 'ALL' || l.governorate === govFilter;
+                      return matchQ && matchGov;
+                    })
+                    .map((l) => (
+                      <tr key={l.id} className="hover:bg-stone-50/70 transition">
+                        <td className="p-3.5 font-mono text-stone-500">{l.id}</td>
+                        <td className="p-3.5 font-bold text-stone-900 max-w-xs truncate">
+                          <Link href={`/listings/${l.id}`} className="hover:text-amber-700">
+                            {l.title}
+                          </Link>
+                        </td>
+                        <td className="p-3.5">
+                          <div className="font-medium text-stone-900">{l.owner_name}</div>
+                          <div className="text-[10px] text-stone-400 font-mono" dir="ltr">{l.owner_phone}</div>
+                        </td>
+                        <td className="p-3.5 text-stone-600">{l.governorate}، {l.area}</td>
+                        <td className="p-3.5 text-stone-500">{HOUSING_TYPE_LABELS[l.housing_type] || l.housing_type}</td>
+                        <td className="p-3.5 font-bold text-[#0F2942]">{formatCurrencyEGP(l.monthly_rent)}</td>
+                        <td className="p-3.5">
+                          <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
+                            STATUS_LABELS[l.status]?.color || 'bg-stone-100 text-stone-600'
+                          }`}>
+                            {STATUS_LABELS[l.status]?.label || l.status}
+                          </span>
+                        </td>
+                        <td className="p-3.5 font-mono">{l.views}</td>
+                        <td className="p-3.5 text-center">
+                          <div className="inline-flex items-center gap-1">
+                            {l.status !== 'published' && (
+                              <button
+                                onClick={() => changeListingStatus(l.id, 'published')}
+                                className="px-2 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded text-[11px] font-bold"
+                                title="نشر فوري"
+                              >
+                                نشر
+                              </button>
+                            )}
+                            {l.status === 'published' && (
+                              <button
+                                onClick={() => changeListingStatus(l.id, 'paused')}
+                                className="px-2 py-1 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded text-[11px] font-bold"
+                                title="إيقاف مؤقت"
+                              >
+                                إيقاف
+                              </button>
+                            )}
+                            {l.status !== 'rejected' && (
+                              <button
+                                onClick={() => changeListingStatus(l.id, 'rejected')}
+                                className="px-2 py-1 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded text-[11px] font-bold"
+                                title="رفض الإعلان"
+                              >
+                                رفض
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                )}
               </tbody>
             </table>
           )}
@@ -782,61 +617,75 @@ export default function MasterAdminSheetPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-stone-100">
-                {complaints
-                  .filter((c) => {
-                    return (
-                      c.reporter_name.includes(searchQuery) ||
-                      c.accused_name.includes(searchQuery) ||
-                      c.description.includes(searchQuery)
-                    );
-                  })
-                  .map((c) => (
-                    <tr key={c.id} className="hover:bg-stone-50/70 transition">
-                      <td className="p-3.5 font-mono text-stone-500">{c.id}</td>
-                      <td className="p-3.5 font-bold text-rose-700">{c.category}</td>
-                      <td className="p-3.5 text-stone-800">{c.reporter_name}</td>
-                      <td className="p-3.5">
-                        <div className="font-bold text-stone-900">{c.accused_name}</div>
-                        <div className="text-[10px] text-stone-400 font-mono" dir="ltr">{c.accused_phone}</div>
-                      </td>
-                      <td className="p-3.5 max-w-sm">
-                        <p className="text-stone-600 line-clamp-2">{c.description}</p>
-                        {c.evidence_url && (
-                          <a
-                            href={c.evidence_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[11px] text-[#0F2942] underline hover:text-amber-700 block mt-1"
-                          >
-                            معاينة مرفق الشات والدليل
-                          </a>
-                        )}
-                      </td>
-                      <td className="p-3.5">
-                        <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
-                          c.status === 'resolved'
-                            ? 'bg-emerald-100 text-emerald-800'
-                            : c.status === 'rejected'
-                            ? 'bg-stone-100 text-stone-600'
-                            : 'bg-amber-100 text-amber-800'
-                        }`}>
-                          {c.status === 'resolved' ? 'تم الحل وحظر السمسار' : c.status === 'rejected' ? 'مرفوض' : 'قيد الفحص'}
-                        </span>
-                      </td>
-                      <td className="p-3.5 text-center">
-                        {c.status !== 'resolved' ? (
-                          <button
-                            onClick={() => resolveComplaintAndBan(c.id)}
-                            className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg text-xs transition"
-                          >
-                            ثبوت المخالفة وحظر السمسار
-                          </button>
-                        ) : (
-                          <span className="text-emerald-700 font-bold text-[11px]">تم التنفيذ بنجاح</span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
+                {complaints.filter((c) => {
+                  return (
+                    c.reporter_name.includes(searchQuery) ||
+                    c.accused_name.includes(searchQuery) ||
+                    c.description.includes(searchQuery)
+                  );
+                }).length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="p-8 text-center text-stone-400">
+                      سجل البلاغات والشكاوى نظيف تماماً
+                    </td>
+                  </tr>
+                ) : (
+                  complaints
+                    .filter((c) => {
+                      return (
+                        c.reporter_name.includes(searchQuery) ||
+                        c.accused_name.includes(searchQuery) ||
+                        c.description.includes(searchQuery)
+                      );
+                    })
+                    .map((c) => (
+                      <tr key={c.id} className="hover:bg-stone-50/70 transition">
+                        <td className="p-3.5 font-mono text-stone-500">{c.id}</td>
+                        <td className="p-3.5 font-bold text-rose-700">{c.category}</td>
+                        <td className="p-3.5 text-stone-800">{c.reporter_name}</td>
+                        <td className="p-3.5">
+                          <div className="font-bold text-stone-900">{c.accused_name}</div>
+                          <div className="text-[10px] text-stone-400 font-mono" dir="ltr">{c.accused_phone}</div>
+                        </td>
+                        <td className="p-3.5 max-w-sm">
+                          <p className="text-stone-600 line-clamp-2">{c.description}</p>
+                          {c.evidence_url && (
+                            <a
+                              href={c.evidence_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[11px] text-[#0F2942] underline hover:text-amber-700 block mt-1"
+                            >
+                              معاينة مرفق الشات والدليل
+                            </a>
+                          )}
+                        </td>
+                        <td className="p-3.5">
+                          <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
+                            c.status === 'resolved'
+                              ? 'bg-emerald-100 text-emerald-800'
+                              : c.status === 'rejected'
+                              ? 'bg-stone-100 text-stone-600'
+                              : 'bg-amber-100 text-amber-800'
+                          }`}>
+                            {c.status === 'resolved' ? 'تم الحل وحظر السمسار' : c.status === 'rejected' ? 'مرفوض' : 'قيد الفحص'}
+                          </span>
+                        </td>
+                        <td className="p-3.5 text-center">
+                          {c.status !== 'resolved' ? (
+                            <button
+                              onClick={() => resolveComplaintAndBan(c.id)}
+                              className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg text-xs transition"
+                            >
+                              ثبوت المخالفة وحظر السمسار
+                            </button>
+                          ) : (
+                            <span className="text-emerald-700 font-bold text-[11px]">تم التنفيذ بنجاح</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                )}
               </tbody>
             </table>
           )}
@@ -857,24 +706,32 @@ export default function MasterAdminSheetPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-stone-100">
-                {wantedRequests.map((w) => (
-                  <tr key={w.id} className="hover:bg-stone-50/70 transition">
-                    <td className="p-3.5 font-mono text-stone-500">{w.id}</td>
-                    <td className="p-3.5 font-bold text-stone-900">{w.seeker_name}</td>
-                    <td className="p-3.5 font-mono text-stone-700" dir="ltr">{w.seeker_phone}</td>
-                    <td className="p-3.5 text-stone-600">{w.governorate} — {w.area}</td>
-                    <td className="p-3.5 text-stone-500">{HOUSING_TYPE_LABELS[w.housing_type] || w.housing_type}</td>
-                    <td className="p-3.5 font-bold text-[#0F2942]">{formatCurrencyEGP(w.budget_max)}</td>
-                    <td className="p-3.5">
-                      <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
-                        w.is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-stone-100 text-stone-600'
-                      }`}>
-                        {w.is_active ? 'تنبيه فوري نشط' : 'موقوف'}
-                      </span>
+                {wantedRequests.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="p-8 text-center text-stone-400">
+                      لا توجد طلبات سكن مسجلة حالياً
                     </td>
-                    <td className="p-3.5 text-stone-400">{w.created_at}</td>
                   </tr>
-                ))}
+                ) : (
+                  wantedRequests.map((w) => (
+                    <tr key={w.id} className="hover:bg-stone-50/70 transition">
+                      <td className="p-3.5 font-mono text-stone-500">{w.id}</td>
+                      <td className="p-3.5 font-bold text-stone-900">{w.seeker_name}</td>
+                      <td className="p-3.5 font-mono text-stone-700" dir="ltr">{w.seeker_phone}</td>
+                      <td className="p-3.5 text-stone-600">{w.governorate} — {w.area}</td>
+                      <td className="p-3.5 text-stone-500">{HOUSING_TYPE_LABELS[w.housing_type] || w.housing_type}</td>
+                      <td className="p-3.5 font-bold text-[#0F2942]">{formatCurrencyEGP(w.budget_max)}</td>
+                      <td className="p-3.5">
+                        <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
+                          w.is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-stone-100 text-stone-600'
+                        }`}>
+                          {w.is_active ? 'تنبيه فوري نشط' : 'موقوف'}
+                        </span>
+                      </td>
+                      <td className="p-3.5 text-stone-400">{w.created_at}</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           )}
@@ -893,20 +750,28 @@ export default function MasterAdminSheetPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-stone-100">
-                {auditLogs.map((a) => (
-                  <tr key={a.id} className="hover:bg-stone-50/70 transition">
-                    <td className="p-3.5 font-mono text-stone-500">{a.id}</td>
-                    <td className="p-3.5 font-mono text-stone-600" dir="ltr">{a.created_at}</td>
-                    <td className="p-3.5 font-bold text-stone-900">{a.actor}</td>
-                    <td className="p-3.5">
-                      <span className="bg-stone-100 text-stone-800 font-mono px-2 py-0.5 rounded text-[11px]">
-                        {a.action}
-                      </span>
+                {auditLogs.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="p-8 text-center text-stone-400">
+                      لا توجد عمليات رقابية مسجلة حالياً
                     </td>
-                    <td className="p-3.5 font-mono text-stone-500">{a.target}</td>
-                    <td className="p-3.5 text-stone-700">{a.details}</td>
                   </tr>
-                ))}
+                ) : (
+                  auditLogs.map((a) => (
+                    <tr key={a.id} className="hover:bg-stone-50/70 transition">
+                      <td className="p-3.5 font-mono text-stone-500">{a.id}</td>
+                      <td className="p-3.5 font-mono text-stone-600" dir="ltr">{a.created_at}</td>
+                      <td className="p-3.5 font-bold text-stone-900">{a.actor}</td>
+                      <td className="p-3.5">
+                        <span className="bg-stone-100 text-stone-800 font-mono px-2 py-0.5 rounded text-[11px]">
+                          {a.action}
+                        </span>
+                      </td>
+                      <td className="p-3.5 font-mono text-stone-500">{a.target}</td>
+                      <td className="p-3.5 text-stone-700">{a.details}</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           )}

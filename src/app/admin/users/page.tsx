@@ -16,42 +16,7 @@ import { formatDateArabic } from '@/lib/utils';
 import { logAdminAction } from '@/lib/data-service';
 
 export default function AdminUsersPage() {
-  const [users, setUsers] = useState<Profile[]>([
-    {
-      id: 'user-ahmed-1',
-      full_name: 'أحمد محمود',
-      phone: '+201012345678',
-      phone_verified: true,
-      role_preference: 'provider',
-      bio: 'مهندس مقيم بالقاهرة، أوفر غرف هادئة ومجهزة للطلبة والموظفين الجادين.',
-      is_suspended: false,
-      created_at: '2026-10-14T10:00:00.000Z',
-      updated_at: '2026-10-16T12:00:00.000Z',
-    },
-    {
-      id: 'user-sara-2',
-      full_name: 'سارة إبراهيم',
-      phone: '+201123456789',
-      phone_verified: true,
-      role_preference: 'provider',
-      bio: 'طبيبة مقيمة في الإسكندرية، شقق مفروشة للطالبات.',
-      is_suspended: false,
-      created_at: '2026-10-13T15:00:00.000Z',
-      updated_at: '2026-10-16T12:00:00.000Z',
-    },
-    {
-      id: 'user-broker-suspect',
-      full_name: 'وسيط عقارات تجاري (مخالف)',
-      phone: '+201299998888',
-      phone_verified: false,
-      role_preference: 'provider',
-      bio: 'مكتب تسويق عقارات بالمعادي',
-      is_suspended: true,
-      suspension_reason: 'طلب عمولة سمسرة وممارسة الوساطة التجارية بالمخالفة لميثاق سَكَن.',
-      created_at: '2026-10-12T08:00:00.000Z',
-      updated_at: '2026-10-16T12:00:00.000Z',
-    }
-  ]);
+  const [users, setUsers] = useState<Profile[]>([]);
 
   const [search, setSearch] = useState('');
   const [selectedUser, setSelectedUser] = useState<Profile | null>(null);
@@ -120,7 +85,14 @@ export default function AdminUsersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-stone-100">
-              {filtered.map((u) => (
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="p-8 text-center text-stone-400 text-xs">
+                    لا يوجد مستخدمون مسجلون حالياً في النظام
+                  </td>
+                </tr>
+              ) : (
+                filtered.map((u) => (
                 <tr key={u.id} className="hover:bg-stone-50/60 transition">
                   <td className="p-3.5 font-bold text-stone-900">
                     <div>{u.full_name}</div>
@@ -164,7 +136,7 @@ export default function AdminUsersPage() {
                     )}
                   </td>
                 </tr>
-              ))}
+              )))}
             </tbody>
           </table>
         </div>

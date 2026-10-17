@@ -6,35 +6,7 @@ import { AdminAuditLog } from '@/types/database';
 import { formatDateArabic } from '@/lib/utils';
 
 export default function AdminAuditLogsPage() {
-  const [logs] = useState<AdminAuditLog[]>([
-    {
-      id: 'log-1',
-      actor_id: 'super-admin-root',
-      action: 'SUSPEND_USER',
-      target_type: 'user',
-      target_id: 'user-broker-suspect',
-      metadata: { reason: 'طلب عمولة سمسرة بالمخالفة للميثاق', evidence_count: 1 },
-      created_at: '2026-10-16T12:00:00.000Z',
-    },
-    {
-      id: 'log-2',
-      actor_id: 'super-admin-root',
-      action: 'REJECT_LISTING',
-      target_type: 'listing',
-      target_id: 'listing-suspect-broker',
-      metadata: { reason: 'شروط مخالفة ورسوم سمسرة' },
-      created_at: '2026-10-16T11:45:00.000Z',
-    },
-    {
-      id: 'log-3',
-      actor_id: 'super-admin-root',
-      action: 'APPROVE_LISTING',
-      target_type: 'listing',
-      target_id: 'listing-cairo-1',
-      metadata: { title: 'غرفة سنجل هادئة ومفروشة بالكامل قرب مترو الدقي' },
-      created_at: '2026-10-15T09:30:00.000Z',
-    }
-  ]);
+  const [logs] = useState<AdminAuditLog[]>([]);
 
   const [search, setSearch] = useState('');
 
@@ -89,7 +61,14 @@ export default function AdminAuditLogsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-stone-100">
-              {filtered.map((log) => (
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="p-8 text-center text-stone-400 text-xs">
+                    لا توجد عمليات مسجلة في سجل الرقابة حتى الآن
+                  </td>
+                </tr>
+              ) : (
+                filtered.map((log) => (
                 <tr key={log.id} className="hover:bg-stone-50/60 transition">
                   <td className="p-3.5">
                     <span className="font-mono font-bold text-[#0F2942] bg-stone-100 px-2 py-0.5 rounded">
@@ -110,7 +89,7 @@ export default function AdminAuditLogsPage() {
                     {formatDateArabic(log.created_at)}
                   </td>
                 </tr>
-              ))}
+              )))}
             </tbody>
           </table>
         </div>

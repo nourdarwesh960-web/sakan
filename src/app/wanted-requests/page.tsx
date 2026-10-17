@@ -21,25 +21,7 @@ import { HOUSING_TYPE_LABELS, OCCUPANT_LABELS, formatCurrencyEGP, formatDateArab
 import { createWantedRequest } from '@/lib/data-service';
 
 export default function WantedRequestsPage() {
-  const [requests, setRequests] = useState<WantedRequest[]>([
-    {
-      id: 'req-1',
-      user_id: 'user-demo',
-      housing_type: 'room',
-      governorate: 'الجيزة',
-      area: 'الدقي أو المهندسين',
-      budget_max: 3000,
-      beds_count: 1,
-      occupant_preference: 'both',
-      move_in_date: '2026-11-01',
-      furnished_preference: true,
-      additional_requirements: 'قريب من محطة المترو، إنترنت سريع، بيئة هادئة للمذاكرة.',
-      is_active: true,
-      created_at: '2026-10-15T10:00:00.000Z',
-      updated_at: '2026-10-16T12:00:00.000Z',
-    }
-  ]);
-
+  const [requests, setRequests] = useState<WantedRequest[]>([]);
   const [showModal, setShowModal] = useState(false);
   
   // New request fields

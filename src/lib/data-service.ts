@@ -33,148 +33,14 @@ const memoryStore = {
   userRoles: new Map<string, AdminRole[]>(),
 };
 
-// Seed initial representative listings for local preview if memory store is empty
+// Clean memory store initialized with zero fake data
 export function initLocalDevData() {
-  if (memoryStore.listings.length > 0) return;
-  const now = '2026-10-16T12:00:00.000Z';
-  
-  memoryStore.profiles.push({
-    id: 'user-ahmed-1',
-    full_name: 'أحمد محمود',
-    phone: '+201012345678',
-    phone_verified: true,
-    role_preference: 'provider',
-    bio: 'مهندس مقيم بالقاهرة، أوفر غرف هادئة ومجهزة للطلبة والموظفين الجادين.',
-    is_suspended: false,
-    created_at: now,
-    updated_at: now,
-  });
-
-  memoryStore.profiles.push({
-    id: 'user-sara-2',
-    full_name: 'سارة إبراهيم',
-    phone: '+201123456789',
-    phone_verified: true,
-    role_preference: 'provider',
-    bio: 'طبيبة مقيمة في الإسكندرية، شقق مفروشة للطالبات.',
-    is_suspended: false,
-    created_at: now,
-    updated_at: now,
-  });
-
-  memoryStore.listings.push({
-    id: 'listing-cairo-1',
-    owner_id: 'user-ahmed-1',
-    title: 'غرفة سنجل هادئة ومفروشة بالكامل قرب مترو الدقي',
-    description: 'غرفة ممتازة للطلبة أو الموظفين، في شقة راقية وهادئة جداً. متوفر إنترنت فائق السرعة، غسالة أوتوماتيك، ومطبخ مجهز بالكامل. تبعد 5 دقائق مشياً عن محطة مترو الدقي وشارع التحرير. السعر شامل فواتير المياه والكهرباء والإنترنت. يمنع التدخين تماماً.',
-    governorate: 'الجيزة',
-    area: 'الدقي',
-    housing_type: 'room',
-    eligible_occupants: 'both',
-    gender_preference: 'male',
-    monthly_rent: 2800,
-    deposit: 2800,
-    utilities_cost: 0,
-    furnished: true,
-    available_from: new Date().toISOString().split('T')[0],
-    amenities: ['واي فاي سريع', 'مكيف هواء', 'غسالة', 'مطبخ كامل', 'مصعد', 'حارس عقار'],
-    status: 'published',
-    room_occupancy_type: 'private',
-    beds_count: 1,
-    rooms_count: 3,
-    bathrooms_count: 2,
-    max_occupancy: 1,
-    show_phone_publicly: false,
-    views_count: 142,
-    created_at: new Date(Date.now() - 24 * 3600 * 1000).toISOString(),
-    updated_at: now,
-    photos: [
-      { id: 'p1', listing_id: 'listing-cairo-1', photo_url: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80', order_index: 0, created_at: now },
-      { id: 'p2', listing_id: 'listing-cairo-1', photo_url: 'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=800&q=80', order_index: 1, created_at: now }
-    ],
-    owner: {
-      id: 'user-ahmed-1',
-      full_name: 'أحمد محمود',
-      role_preference: 'provider',
-    }
-  });
-
-  memoryStore.listings.push({
-    id: 'listing-alex-2',
-    owner_id: 'user-sara-2',
-    title: 'استوديو مستقل مفروش ومكيف يرى البحر في لوران',
-    description: 'استوديو ممتاز ومستقل تماماً في الدور السادس بعمارة راقية مع مصعد حديث. مجهز بأثاث فندقي نظيف ومطبخ أمريكي وتكييف شارب. خطوات من ترام لوران وشاطئ البحر. مناسب جداً للأطباء أو طلبة الدراسات العليا.',
-    governorate: 'الإسكندرية',
-    area: 'لوران',
-    housing_type: 'studio',
-    eligible_occupants: 'both',
-    gender_preference: 'female',
-    monthly_rent: 4200,
-    deposit: 4200,
-    utilities_cost: 300,
-    furnished: true,
-    available_from: new Date().toISOString().split('T')[0],
-    amenities: ['إطلالة بحر', 'مصعد', 'مكيف هواء', 'شاشة تلفزيون', 'واي فاي', 'مطبخ أمريكي'],
-    status: 'published',
-    beds_count: 1,
-    rooms_count: 1,
-    bathrooms_count: 1,
-    max_occupancy: 2,
-    show_phone_publicly: false,
-    views_count: 289,
-    created_at: new Date(Date.now() - 48 * 3600 * 1000).toISOString(),
-    updated_at: now,
-    photos: [
-      { id: 'p3', listing_id: 'listing-alex-2', photo_url: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80', order_index: 0, created_at: now }
-    ],
-    owner: {
-      id: 'user-sara-2',
-      full_name: 'سارة إبراهيم',
-      role_preference: 'provider',
-    }
-  });
-
-  memoryStore.listings.push({
-    id: 'listing-cairo-3',
-    owner_id: 'user-ahmed-1',
-    title: 'سكن شباب مشترك بجوار جامعة القاهرة ومحطة المترو',
-    description: 'سرير متاح في غرفة ثنائية واسعة ونظيفة جداً. الشقة مخصصة لطلبة جامعة القاهرة والموظفين. بيئة دراسية هادئة مع صالة جلوس ومطبخ كامل. لا توجد أي عمولات أو رسوم معاينة.',
-    governorate: 'الجيزة',
-    area: 'بين السرايات',
-    housing_type: 'shared_apartment',
-    eligible_occupants: 'students',
-    gender_preference: 'male',
-    monthly_rent: 1400,
-    deposit: 1000,
-    utilities_cost: 150,
-    furnished: true,
-    available_from: new Date().toISOString().split('T')[0],
-    amenities: ['واي فاي', 'غسالة', 'مكتب للمذاكرة', 'مروحة سقف', 'مطبخ كامل'],
-    status: 'published',
-    room_occupancy_type: 'shared',
-    beds_count: 2,
-    rooms_count: 3,
-    bathrooms_count: 1,
-    max_occupancy: 4,
-    show_phone_publicly: false,
-    views_count: 310,
-    created_at: new Date(Date.now() - 72 * 3600 * 1000).toISOString(),
-    updated_at: now,
-    photos: [
-      { id: 'p4', listing_id: 'listing-cairo-3', photo_url: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80', order_index: 0, created_at: now }
-    ],
-    owner: {
-      id: 'user-ahmed-1',
-      full_name: 'أحمد محمود',
-      role_preference: 'provider',
-    }
-  });
-
-  // Assign demo super_admin
+  // Empty memory store for clean production readiness
+  // Real listings are created dynamically by actual users
   memoryStore.userRoles.set('admin-test-id', ['super_admin', 'admin']);
 }
 
-// Initialize test fixture data
+// Initialize clean data store
 initLocalDevData();
 
 export interface ListingFilterParams {
@@ -292,6 +158,30 @@ export async function getListingById(id: string): Promise<Listing | null> {
 
   const found = memoryStore.listings.find((l) => l.id === id);
   return found || null;
+}
+
+export async function getMyListings(ownerId?: string): Promise<Listing[]> {
+  if (isSupabaseConfigured()) {
+    try {
+      const supabase = await createClient();
+      let query = supabase
+        .from('listings')
+        .select('*, photos:listing_photos(*)')
+        .order('created_at', { ascending: false });
+      if (ownerId) {
+        query = query.eq('owner_id', ownerId);
+      }
+      const { data, error } = await query;
+      if (!error && data) return data as Listing[];
+    } catch {
+      // Fallback to memory
+    }
+  }
+
+  if (ownerId) {
+    return memoryStore.listings.filter((l) => l.owner_id === ownerId);
+  }
+  return memoryStore.listings;
 }
 
 export async function getRelatedListings(listing: Listing, limit = 3): Promise<Listing[]> {

@@ -16,60 +16,25 @@ import {
 import { Listing } from '@/types/database';
 import { formatCurrencyEGP, formatDateArabic, HOUSING_TYPE_LABELS, STATUS_LABELS } from '@/lib/utils';
 
+import { getMyListings } from '@/lib/data-service';
+
 export default function MyListingsPage() {
-  // Demo provider listings
-  const [listings, setListings] = useState<Listing[]>([
-    {
-      id: 'listing-cairo-1',
-      owner_id: 'user-ahmed-1',
-      title: 'غرفة سنجل هادئة ومفروشة بالكامل قرب مترو الدقي',
-      description: 'غرفة ممتازة للطلبة أو الموظفين، في شقة راقية وهادئة جداً.',
-      governorate: 'الجيزة',
-      area: 'الدقي',
-      housing_type: 'room',
-      eligible_occupants: 'both',
-      gender_preference: 'male',
-      monthly_rent: 2800,
-      deposit: 2800,
-      utilities_cost: 0,
-      furnished: true,
-      available_from: '2026-10-15',
-      amenities: ['واي فاي سريع', 'مكيف هواء'],
-      status: 'published',
-      show_phone_publicly: false,
-      views_count: 142,
-      created_at: '2026-10-15T12:00:00.000Z',
-      updated_at: '2026-10-16T12:00:00.000Z',
-      photos: [
-        { id: 'p1', listing_id: 'listing-cairo-1', photo_url: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=600&q=80', order_index: 0, created_at: '' }
-      ]
-    },
-    {
-      id: 'listing-cairo-3',
-      owner_id: 'user-ahmed-1',
-      title: 'سكن شباب مشترك بجوار جامعة القاهرة ومحطة المترو',
-      description: 'سرير متاح في غرفة ثنائية واسعة ونظيفة جداً.',
-      governorate: 'الجيزة',
-      area: 'بين السرايات',
-      housing_type: 'shared_apartment',
-      eligible_occupants: 'students',
-      gender_preference: 'male',
-      monthly_rent: 1400,
-      deposit: 1000,
-      utilities_cost: 150,
-      furnished: true,
-      available_from: '2026-10-10',
-      amenities: ['واي فاي', 'غسالة'],
-      status: 'published',
-      show_phone_publicly: false,
-      views_count: 310,
-      created_at: '2026-10-13T10:00:00.000Z',
-      updated_at: '2026-10-16T12:00:00.000Z',
-      photos: [
-        { id: 'p4', listing_id: 'listing-cairo-3', photo_url: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=600&q=80', order_index: 0, created_at: '' }
-      ]
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    async function load() {
+      try {
+        const data = await getMyListings();
+        setListings(data);
+      } catch {
+        setListings([]);
+      } finally {
+        setLoading(false);
+      }
     }
-  ]);
+    load();
+  }, []);
 
   const toggleStatus = (id: string) => {
     setListings(
@@ -117,7 +82,25 @@ export default function MyListingsPage() {
 
       {/* Listings List */}
       <div className="space-y-4">
-        {listings.map((listing) => (
+        {loading ? (
+          <div className="text-center py-12 text-stone-400 text-sm">جاري تحميل إعلاناتك...</div>
+        ) : listings.length === 0 ? (
+          <div className="bg-white rounded-2xl border border-stone-200 p-12 text-center max-w-md mx-auto space-y-4">
+            <Building className="w-12 h-12 text-stone-300 mx-auto" />
+            <h3 className="text-base font-bold text-stone-800">ليس لديك أي إعلانات منشورة بعد</h3>
+            <p className="text-xs text-stone-500 leading-relaxed">
+              انشر وحدتك السكنية الآن لتصل إلى آلاف الطلبة والموظفين الباحثين عن سكن في مصر مباشرة وبدون أي عمولات.
+            </p>
+            <Link
+              href="/my-listings/new"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0F2942] hover:bg-[#0A3A40] text-white font-bold rounded-xl text-xs shadow"
+            >
+              <PlusCircle className="w-4 h-4" />
+              <span>نشر أول إعلان الآن</span>
+            </Link>
+          </div>
+        ) : (
+          listings.map((listing) => (
           <div
             key={listing.id}
             className="bg-white rounded-2xl border border-stone-200 p-4 sm:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 shadow-xs"
@@ -197,7 +180,7 @@ export default function MyListingsPage() {
             </div>
 
           </div>
-        ))}
+        )))}
       </div>
 
     </div>
