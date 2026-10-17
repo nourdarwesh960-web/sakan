@@ -16,38 +16,7 @@ import { NotificationItem, NotificationType } from '@/types/database';
 import { formatDateArabic } from '@/lib/utils';
 
 export default function NotificationsCenterPage() {
-  const [notifications, setNotifications] = useState<NotificationItem[]>([
-    {
-      id: 'notif-1',
-      user_id: 'user-current',
-      type: 'match',
-      title: 'سكن جديد يطابق طلبك في الدقي!',
-      body: 'تم نشر غرفة مفروشة جديدة في الجيزة، الدقي بمبلغ 2,800 ج.م تطابق مواصفات طلبك المحفوظ.',
-      link: '/listings/listing-cairo-1',
-      is_read: false,
-      created_at: '2026-10-16T13:00:00.000Z',
-    },
-    {
-      id: 'notif-2',
-      user_id: 'user-current',
-      type: 'message',
-      title: 'رسالة جديدة من أحمد محمود',
-      body: 'أهلاً بك! المعاينة متاحة غداً بعد العصر إن شاء الله.',
-      link: '/messages/convo-1',
-      is_read: false,
-      created_at: '2026-10-16T11:00:00.000Z',
-    },
-    {
-      id: 'notif-3',
-      user_id: 'user-current',
-      type: 'security',
-      title: 'تنبيه أمان: احذر السماسرة',
-      body: 'تأكد دائماً من معاينة السكن بنفسك قبل تحويل أي مبالغ مالية أو دفع تأمين.',
-      link: '/safety',
-      is_read: true,
-      created_at: '2026-10-15T09:00:00.000Z',
-    }
-  ]);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
 
   const markAllAsRead = () => {
     setNotifications(notifications.map((n) => ({ ...n, is_read: true })));

@@ -63,12 +63,6 @@ export default function Header() {
                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
                 حقك محفوظ
               </Link>
-              <Link 
-                href="/admin" 
-                className="px-2 py-1 text-xs text-stone-500 hover:text-stone-900 bg-stone-50 hover:bg-stone-100 border border-stone-200 rounded"
-              >
-                لوحة الإدارة
-              </Link>
             </nav>
           </div>
 
@@ -169,14 +163,6 @@ export default function Header() {
           >
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
             ميثاق الأمان وبدون عمولات
-          </Link>
-          <Link
-            href="/admin"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-stone-800 hover:bg-stone-100 text-sm font-medium"
-          >
-            <User className="w-4 h-4 text-stone-500" />
-            لوحة الإدارة
           </Link>
           <div className="pt-2 border-t border-stone-100 flex flex-col gap-2">
             <Link

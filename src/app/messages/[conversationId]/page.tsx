@@ -12,7 +12,8 @@ import {
   Flag, 
   Ban, 
   CheckCheck, 
-  AlertCircle 
+  AlertCircle,
+  MessageSquare 
 } from 'lucide-react';
 import { Message } from '@/types/database';
 
@@ -20,32 +21,7 @@ export default function ActiveConversationPage() {
   const params = useParams();
   const conversationId = params.conversationId as string;
 
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 'm1',
-      conversation_id: conversationId,
-      sender_id: 'user-ahmed-1',
-      content: 'السلام عليكم ورحمة الله، أهلاً بك بخصوص شقة الدقي المفروشة.',
-      is_system: false,
-      created_at: '2026-10-16T14:00:00.000Z',
-    },
-    {
-      id: 'm2',
-      conversation_id: conversationId,
-      sender_id: 'user-current',
-      content: 'وعليكم السلام، هل الغرفة متاحة للمعاينة هذا الأسبوع؟ وهل السعر يشمل الإنترنت والغاز؟',
-      is_system: false,
-      created_at: '2026-10-16T14:15:00.000Z',
-    },
-    {
-      id: 'm3',
-      conversation_id: conversationId,
-      sender_id: 'user-ahmed-1',
-      content: 'نعم متاح غداً بعد العصر إن شاء الله. والسعر شامل فواتير المياه والكهرباء والإنترنت فائق السرعة، ولا توجد أي عمولات سمسرة.',
-      is_system: false,
-      created_at: '2026-10-16T14:30:00.000Z',
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
   const [inputText, setInputText] = useState('');
   const [isBlocked, setIsBlocked] = useState(false);
@@ -139,30 +115,40 @@ export default function ActiveConversationPage() {
       </div>
 
       {/* Messages Stream */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white/60 rounded-2xl border border-stone-200/60 my-2">
-        {messages.map((msg) => {
-          const isMe = msg.sender_id === 'user-current';
-          return (
-            <div
-              key={msg.id}
-              className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}
-            >
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white/60 rounded-2xl border border-stone-200/60 my-2 flex flex-col">
+        {messages.length === 0 ? (
+          <div className="flex-1 flex flex-col items-center justify-center text-center p-8 text-stone-400 space-y-2">
+            <MessageSquare className="w-8 h-8 text-stone-300 mx-auto" />
+            <p className="text-xs font-bold text-stone-700">بدء محادثة آمنة ومباشرة</p>
+            <p className="text-[11px] text-stone-500 max-w-xs">
+              اكتب استفسارك بالأسفل وسيتلقى الطرف الآخر رسالتك فوراً داخل المنصة بدون وسطاء.
+            </p>
+          </div>
+        ) : (
+          messages.map((msg) => {
+            const isMe = msg.sender_id === 'user-current';
+            return (
               <div
-                className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-xs sm:text-sm leading-relaxed shadow-xs ${
-                  isMe
-                    ? 'bg-[#0F2942] text-white rounded-br-xs'
-                    : 'bg-white border border-stone-200 text-stone-800 rounded-bl-xs'
-                }`}
+                key={msg.id}
+                className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}
               >
-                {msg.content}
+                <div
+                  className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-xs sm:text-sm leading-relaxed shadow-xs ${
+                    isMe
+                      ? 'bg-[#0F2942] text-white rounded-br-xs'
+                      : 'bg-white border border-stone-200 text-stone-800 rounded-bl-xs'
+                  }`}
+                >
+                  {msg.content}
+                </div>
+                <div className="flex items-center gap-1 text-[10px] text-stone-400 mt-1 px-1">
+                  <span>{new Date(msg.created_at).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}</span>
+                  {isMe && <CheckCheck className="w-3 h-3 text-emerald-500" />}
+                </div>
               </div>
-              <div className="flex items-center gap-1 text-[10px] text-stone-400 mt-1 px-1">
-                <span>{new Date(msg.created_at).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}</span>
-                {isMe && <CheckCheck className="w-3 h-3 text-emerald-500" />}
-              </div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
         <div ref={messagesEndRef} />
       </div>
 

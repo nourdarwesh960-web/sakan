@@ -15,62 +15,7 @@ import { Conversation } from '@/types/database';
 import { formatDateArabic } from '@/lib/utils';
 
 export default function MessagesListPage() {
-  const [conversations] = useState<Conversation[]>([
-    {
-      id: 'convo-1',
-      listing_id: 'listing-cairo-1',
-      seeker_id: 'user-current',
-      provider_id: 'user-ahmed-1',
-      created_at: '2026-10-16T12:00:00.000Z',
-      updated_at: '2026-10-16T14:30:00.000Z',
-      listing: {
-        id: 'listing-cairo-1',
-        title: 'غرفة سنجل هادئة ومفروشة بالكامل قرب مترو الدقي',
-        governorate: 'الجيزة',
-        area: 'الدقي',
-      },
-      provider: {
-        id: 'user-ahmed-1',
-        full_name: 'أحمد محمود',
-      },
-      last_message: {
-        id: 'msg-101',
-        conversation_id: 'convo-1',
-        sender_id: 'user-ahmed-1',
-        content: 'أهلاً بك! المعاينة متاحة غداً بعد العصر إن شاء الله. هل يناسبك الميعاد؟',
-        is_system: false,
-        created_at: '2026-10-16T14:30:00.000Z',
-      },
-      unread_count: 1,
-    },
-    {
-      id: 'convo-2',
-      listing_id: 'listing-alex-2',
-      seeker_id: 'user-current',
-      provider_id: 'user-sara-2',
-      created_at: '2026-10-14T10:00:00.000Z',
-      updated_at: '2026-10-15T16:00:00.000Z',
-      listing: {
-        id: 'listing-alex-2',
-        title: 'استوديو مستقل مفروش ومكيف يرى البحر في لوران',
-        governorate: 'الإسكندرية',
-        area: 'لوران',
-      },
-      provider: {
-        id: 'user-sara-2',
-        full_name: 'سارة إبراهيم',
-      },
-      last_message: {
-        id: 'msg-102',
-        conversation_id: 'convo-2',
-        sender_id: 'user-current',
-        content: 'تمام شكراً لحضرتك، هتواصل معك لتأكيد الحجز.',
-        is_system: false,
-        created_at: '2026-10-15T16:00:00.000Z',
-      },
-      unread_count: 0,
-    }
-  ]);
+  const [conversations] = useState<Conversation[]>([]);
 
   const [searchQuery, setSearchQuery] = useState('');
 

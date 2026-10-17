@@ -19,7 +19,8 @@ import {
   ArrowLeft,
   ShieldCheck,
   Eye,
-  EyeOff
+  EyeOff,
+  ImagePlus
 } from 'lucide-react';
 import { EGYPT_GOVERNORATES, HousingType, EligibleOccupants, GenderPreference } from '@/types/database';
 import { createListing } from '@/lib/data-service';
@@ -70,10 +71,8 @@ export default function NewListingPage() {
   ];
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>(['واي فاي سريع', 'مطبخ مجهز']);
 
-  // Photos URLs (Local / preview)
-  const [photoUrls, setPhotoUrls] = useState<string[]>([
-    'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80',
-  ]);
+  // Photos URLs (from device gallery or link - clean empty default)
+  const [photoUrls, setPhotoUrls] = useState<string[]>([]);
   const [newPhotoInput, setNewPhotoInput] = useState('');
 
   const [formError, setFormError] = useState('');
@@ -86,6 +85,23 @@ export default function NewListingPage() {
     } else {
       setSelectedAmenities([...selectedAmenities, item]);
     }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    Array.from(files).forEach((file) => {
+      if (!file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setPhotoUrls((prev) => [...prev, event.target!.result as string]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+    e.target.value = '';
   };
 
   const addPhotoUrl = () => {
@@ -475,42 +491,77 @@ export default function NewListingPage() {
         <div className="space-y-4">
           <h2 className="text-base font-bold text-stone-900 pb-2 border-b border-stone-100 flex items-center gap-2">
             <Upload className="w-4 h-4 text-[#0F2942]" />
-            ٥. صور السكن
+            ٥. صور السكن (من المعرض أو الكاميرا)
           </h2>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {photoUrls.map((url, i) => (
-              <div key={i} className="aspect-video relative rounded-xl overflow-hidden border border-stone-200 group">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={url} alt={`صورة ${i + 1}`} className="w-full h-full object-cover" />
-                <button
-                  type="button"
-                  onClick={() => removePhoto(i)}
-                  className="absolute top-1 left-1 bg-rose-600 text-white p-1 rounded-full opacity-80 hover:opacity-100"
-                  title="حذف الصورة"
-                >
-                  <X className="w-3 h-3" />
-                </button>
+          {/* Gallery file upload trigger */}
+          <div className="flex flex-col gap-3">
+            <label className="border-2 border-dashed border-stone-300 hover:border-[#0F2942] bg-stone-50 hover:bg-stone-100/80 rounded-2xl p-6 text-center cursor-pointer transition flex flex-col items-center justify-center gap-2 group">
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+              <div className="w-12 h-12 rounded-2xl bg-white shadow-xs border border-stone-200 flex items-center justify-center text-[#0F2942] group-hover:scale-105 transition">
+                <ImagePlus className="w-6 h-6" />
               </div>
-            ))}
-          </div>
+              <div className="space-y-0.5">
+                <span className="text-xs sm:text-sm font-bold text-stone-900 block">
+                  اضغط هنا لاختيار صور من المعرض أو الكاميرا
+                </span>
+                <span className="text-[11px] text-stone-500 block">
+                  يمكنك تحديد صورة واحدة أو عدة صور معاً مباشرة من هاتفك أو جهازك
+                </span>
+              </div>
+            </label>
 
-          <div className="flex gap-2">
-            <input
-              type="url"
-              dir="ltr"
-              value={newPhotoInput}
-              onChange={(e) => setNewPhotoInput(e.target.value)}
-              placeholder="https://example.com/photo.jpg رابط صورة إضافية"
-              className="flex-1 bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs text-right focus:outline-none"
-            />
-            <button
-              type="button"
-              onClick={addPhotoUrl}
-              className="px-4 py-2 bg-stone-800 hover:bg-stone-900 text-white text-xs font-bold rounded-xl transition"
-            >
-              إضافة صورة
-            </button>
+            {/* Photo preview grid */}
+            {photoUrls.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                {photoUrls.map((url, i) => (
+                  <div key={i} className="aspect-video relative rounded-xl overflow-hidden border border-stone-200 shadow-xs group">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={url} alt={`صورة ${i + 1}`} className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removePhoto(i)}
+                      className="absolute top-1 left-1 bg-rose-600 hover:bg-rose-700 text-white p-1 rounded-full shadow transition"
+                      title="حذف الصورة"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                    <span className="absolute bottom-1 right-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded">
+                      صورة {i + 1}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs text-stone-400 text-center py-1">
+                لم يتم رفع أي صور بعد. يفضل رفع صور واضحة لكافة أنحاء السكن لزيادة فرص التواصل.
+              </p>
+            )}
+
+            {/* Optional URL input */}
+            <div className="pt-2 border-t border-stone-100 flex gap-2">
+              <input
+                type="url"
+                dir="ltr"
+                value={newPhotoInput}
+                onChange={(e) => setNewPhotoInput(e.target.value)}
+                placeholder="رابط صورة مباشر (اختياري) https://..."
+                className="flex-1 bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs text-right focus:outline-none focus:ring-1 focus:ring-[#0F2942]"
+              />
+              <button
+                type="button"
+                onClick={addPhotoUrl}
+                className="px-4 py-2 bg-stone-800 hover:bg-stone-900 text-white text-xs font-bold rounded-xl transition whitespace-nowrap"
+              >
+                إضافة بالرابط
+              </button>
+            </div>
           </div>
         </div>
 

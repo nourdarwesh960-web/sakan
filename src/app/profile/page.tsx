@@ -19,12 +19,12 @@ import {
 import { EGYPT_GOVERNORATES } from '@/types/database';
 
 export default function ProfilePage() {
-  const [fullName, setFullName] = useState('أحمد محمود');
-  const [phone, setPhone] = useState('+201012345678');
-  const [email, setEmail] = useState('ahmed@example.com');
-  const [bio, setBio] = useState('مهندس مقيم بالقاهرة، أهتم بالسكن الهادئ والنظيف.');
+  const [fullName, setFullName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [bio, setBio] = useState('');
   const [rolePreference, setRolePreference] = useState<'seeker' | 'provider' | 'both'>('both');
-  const [favGovernorate, setFavGovernorate] = useState('الجيزة');
+  const [favGovernorate, setFavGovernorate] = useState('القاهرة');
   
   // Notification Preferences
   const [matchAlerts, setMatchAlerts] = useState(true);
@@ -47,17 +47,17 @@ export default function ProfilePage() {
       {/* Profile Header */}
       <div className="bg-white rounded-3xl border border-stone-200 p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6 shadow-xs">
         <div className="w-20 h-20 rounded-full bg-[#0F2942] text-white flex items-center justify-center font-black text-3xl shadow">
-          {fullName ? fullName[0] : 'أ'}
+          {fullName ? fullName[0] : <User className="w-8 h-8" />}
         </div>
         <div className="text-center sm:text-right space-y-1 flex-1">
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-            <h1 className="text-2xl font-black text-[#0F2942]">{fullName}</h1>
-            <span className="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-0.5 rounded-full font-bold">
-              حساب موثق
+            <h1 className="text-2xl font-black text-[#0F2942]">{fullName || 'الملف الشخصي للمستخدم'}</h1>
+            <span className="bg-stone-100 text-stone-700 text-xs px-2.5 py-0.5 rounded-full font-bold">
+              {phone ? 'حساب نشط' : 'يرجى استكمال البيانات'}
             </span>
           </div>
           <p className="text-xs text-stone-500">
-            رقم الهاتف: <span dir="ltr">{phone}</span> • انضم في {new Date().getFullYear()}
+            رقم الهاتف: <span dir="ltr">{phone || 'لم يسجل بعد'}</span> • انضم في {new Date().getFullYear()}
           </p>
         </div>
         <div className="flex gap-2">
