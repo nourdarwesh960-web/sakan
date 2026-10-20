@@ -89,68 +89,68 @@ export default function ActiveConversationPage() {
       
       {/* Top Header */}
       <div className="bg-white rounded-2xl border border-stone-200 p-4 flex flex-wrap items-center justify-between gap-4 shadow-xs shrink-0">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 sm:gap-3">
           <Link
             href="/messages"
-            className="p-1.5 text-stone-500 hover:text-stone-900 rounded-lg hover:bg-stone-100 transition"
+            className="p-1 sm:p-1.5 text-stone-500 hover:text-stone-900 rounded-lg hover:bg-stone-100 transition"
           >
-            <ArrowRight className="w-5 h-5" />
+            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
           </Link>
 
-          <div className="w-10 h-10 rounded-full bg-[#0F2942] text-white flex items-center justify-center font-bold text-sm shadow-xs">
-            <User className="w-5 h-5 text-stone-200" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#0F2942] text-white flex items-center justify-center font-bold text-xs sm:text-sm shadow-xs">
+            <User className="w-4 h-4 sm:w-5 sm:h-5 text-stone-200" />
           </div>
 
           <div>
-            <h2 className="font-bold text-stone-900 text-sm flex items-center gap-1.5">
+            <h2 className="font-bold text-stone-900 text-xs sm:text-sm flex items-center gap-1.5">
               <span>محادثة السكن المباشرة</span>
-              <span className="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded-full font-bold">
+              <span className="bg-emerald-100 text-emerald-800 text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-bold">
                 تواصل مباشر
               </span>
             </h2>
             <Link
               href="/listings"
-              className="text-xs text-stone-500 hover:underline flex items-center gap-1 truncate max-w-xs mt-0.5"
+              className="text-[11px] sm:text-xs text-stone-500 hover:underline flex items-center gap-1 truncate max-w-xs mt-0.5"
             >
-              <Building className="w-3.5 h-3.5 text-stone-400" />
+              <Building className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-stone-400" />
               <span>تفاصيل وموقع السكن</span>
             </Link>
           </div>
         </div>
 
         {/* Actions Dropdown / buttons */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Mark as Rented Button inside chat */}
           {isRented ? (
-            <div className="bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 shadow-xs">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              <span>تم التأجير بنجاح</span>
+            <div className="bg-emerald-50 border border-emerald-300 text-emerald-800 text-[11px] sm:text-xs px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-bold flex items-center gap-1 shadow-xs">
+              <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
+              <span>تم التأجير</span>
             </div>
           ) : (
             <button
               type="button"
               onClick={() => setShowRentedModal(true)}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3.5 py-2 rounded-xl font-bold transition flex items-center gap-1.5 shadow-sm active:scale-95"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] sm:text-xs px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl font-bold transition flex items-center gap-1 sm:gap-1.5 shadow-xs active:scale-95"
               title="تأكيد إتمام التأجير وإغلاق الإعلان"
             >
-              <CheckCircle2 className="w-4 h-4" />
+              <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>تم التأجير</span>
             </button>
           )}
 
           <Link
             href={`/complaints/new?conversation_id=${conversationId}`}
-            className="p-2 text-stone-400 hover:text-rose-600 rounded-xl hover:bg-stone-50 transition"
+            className="p-1.5 text-stone-400 hover:text-rose-600 rounded-xl hover:bg-stone-50 transition"
             title="الإبلاغ عن مخالفة أو سمسار"
           >
-            <Flag className="w-4 h-4" />
+            <Flag className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </Link>
           <button
             onClick={() => setShowBlockConfirm(true)}
-            className="p-2 text-stone-400 hover:text-stone-800 rounded-xl hover:bg-stone-50 transition"
+            className="p-1.5 text-stone-400 hover:text-stone-800 rounded-xl hover:bg-stone-50 transition"
             title="حظر المستخدم"
           >
-            <Ban className="w-4 h-4" />
+            <Ban className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         </div>
       </div>

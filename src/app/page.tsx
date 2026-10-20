@@ -27,37 +27,37 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto space-y-6">
             
-            <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-800 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold shadow-xs">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-semibold shadow-xs">
+              <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600 shrink-0" />
               <span>منصة مباشرة ١٠٠٪ بدون سماسرة وبدون عمولات</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#0F2942] tracking-tight leading-[1.15]">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#0F2942] tracking-tight leading-[1.15]">
               دور على سكنك، <br />
               <span className="text-[#0A3A40]">
                 من غير عمولات.
               </span>
             </h1>
 
-            <p className="text-base sm:text-lg text-stone-600 leading-relaxed font-normal">
+            <p className="text-sm sm:text-lg text-stone-600 leading-relaxed font-normal">
               منصة سَكَن تربط طلبة الجامعات والموظفين المغتربين في مصر بأصحاب الشقق والغرف مباشرة.
               أسعار واضحة، محادثات خاصة، وتفاصيل دقيقة بدون وسيط ولا رسوم خفية.
             </p>
 
             {/* Hero CTAs */}
-            <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-2">
               <Link
                 href="/listings"
-                className="px-6 py-3.5 bg-[#0F2942] hover:bg-[#0A3A40] text-white font-bold rounded-xl shadow-md hover:shadow-lg transition flex items-center gap-2 text-base"
+                className="px-5 sm:px-6 py-2.5 sm:py-3.5 bg-[#0F2942] hover:bg-[#0A3A40] text-white font-bold rounded-xl shadow-md hover:shadow-lg transition flex items-center gap-2 text-sm sm:text-base"
               >
-                <Search className="w-5 h-5" />
-                دور على سكن
+                <Search className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span>دور على سكن</span>
               </Link>
               <Link
                 href="/my-listings/new"
-                className="px-6 py-3.5 bg-white hover:bg-stone-50 text-[#0F2942] border border-stone-300 font-bold rounded-xl shadow-xs hover:shadow transition flex items-center gap-2 text-base"
+                className="px-5 sm:px-6 py-2.5 sm:py-3.5 bg-white hover:bg-stone-50 text-[#0F2942] border border-stone-300 font-bold rounded-xl shadow-xs hover:shadow transition flex items-center gap-2 text-sm sm:text-base"
               >
-                اعرض سكنك مجاناً
+                <span>اعرض سكنك مجاناً</span>
               </Link>
             </div>
           </div>
@@ -114,10 +114,10 @@ export default async function HomePage() {
               <div className="flex items-end">
                 <button
                   type="submit"
-                  className="w-full bg-[#0F2942] hover:bg-[#0A3A40] text-white font-bold py-2.5 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-sm text-sm"
+                  className="w-full bg-[#0F2942] hover:bg-[#0A3A40] text-white font-bold py-2.5 px-4 rounded-xl transition flex items-center justify-center gap-1.5 shadow-xs text-xs sm:text-sm"
                 >
-                  <Search className="w-4 h-4" />
-                  بحث فوري
+                  <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span>بحث فوري</span>
                 </button>
               </div>
 
@@ -131,16 +131,16 @@ export default async function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-black text-[#0F2942]">المحافظات الأكثر طلباً</h2>
-            <p className="text-sm text-stone-500">اختر المحافظة لتصفح السكن الطلابي والشبابي المتاح</p>
+            <h2 className="text-xl sm:text-2xl font-black text-[#0F2942]">المحافظات الأكثر طلباً</h2>
+            <p className="text-xs sm:text-sm text-stone-500">اختر المحافظة لتصفح السكن الطلابي والشبابي المتاح</p>
           </div>
-          <Link href="/listings" className="text-sm font-bold text-[#0F2942] hover:underline flex items-center gap-1">
-            جميع المحافظات
-            <ArrowLeft className="w-4 h-4" />
+          <Link href="/listings" className="text-xs sm:text-sm font-bold text-[#0F2942] hover:underline flex items-center gap-1">
+            <span>جميع المحافظات</span>
+            <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5 sm:gap-3">
           {[
             { name: 'القاهرة', count: 'مدينة نصر، المعادي، حلوان' },
             { name: 'الجيزة', count: 'الدقي، المهندسين، بين السرايات' },
@@ -152,15 +152,15 @@ export default async function HomePage() {
             <Link
               key={idx}
               href={`/listings?governorate=${encodeURIComponent(item.name)}`}
-              className="bg-white p-4 rounded-xl border border-stone-200 hover:border-[#0F2942] hover:shadow-sm transition text-center group"
+              className="bg-white p-3 sm:p-4 rounded-xl border border-stone-200 hover:border-[#0F2942] hover:shadow-xs transition text-center group"
             >
-              <div className="w-8 h-8 mx-auto mb-2 rounded-full bg-stone-100 flex items-center justify-center text-[#0F2942] group-hover:bg-[#0F2942] group-hover:text-white transition">
-                <MapPin className="w-4 h-4" />
+              <div className="w-7 h-7 sm:w-8 sm:h-8 mx-auto mb-1.5 sm:mb-2 rounded-full bg-stone-100 flex items-center justify-center text-[#0F2942] group-hover:bg-[#0F2942] group-hover:text-white transition">
+                <MapPin className="w-3.5 h-3.5" />
               </div>
-              <h3 className="font-bold text-stone-900 text-sm group-hover:text-[#0F2942] transition">
+              <h3 className="font-bold text-stone-900 text-xs sm:text-sm group-hover:text-[#0F2942] transition">
                 {item.name}
               </h3>
-              <p className="text-[11px] text-stone-500 truncate mt-1">{item.count}</p>
+              <p className="text-[10px] sm:text-[11px] text-stone-500 truncate mt-0.5 sm:mt-1">{item.count}</p>
             </Link>
           ))}
         </div>

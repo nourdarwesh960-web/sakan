@@ -32,8 +32,8 @@ export default function RequireAuthModal({
           <X className="w-4 h-4" />
         </button>
 
-        <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 mx-auto flex items-center justify-center mt-2">
-          <Lock className="w-7 h-7" />
+        <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 mx-auto flex items-center justify-center mt-1 sm:mt-2">
+          <Lock className="w-5 h-5 sm:w-6 sm:h-6" />
         </div>
 
         <div className="space-y-1.5">

@@ -93,11 +93,11 @@ export default function WantedRequestsPage() {
       {/* Header Banner */}
       <div className="bg-gradient-to-r from-[#0F2942] to-[#0A3A40] text-white rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-lg">
         <div className="space-y-2 max-w-xl">
-          <div className="inline-flex items-center gap-1.5 bg-amber-500 text-[#0F2942] text-xs font-black px-3 py-1 rounded-full uppercase">
-            <Compass className="w-4 h-4" />
-            خدمة مجانية للطلبة والشباب
+          <div className="inline-flex items-center gap-1.5 bg-amber-500 text-[#0F2942] text-[11px] sm:text-xs font-black px-2.5 sm:px-3 py-1 rounded-full uppercase">
+            <Compass className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <span>خدمة مجانية للطلبة والشباب</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black">دوّرلي على سكن</h1>
+          <h1 className="text-xl sm:text-3xl font-black">دوّرلي على سكن</h1>
           <p className="text-xs sm:text-sm text-stone-200 leading-relaxed">
             سجّل تفضيلات ومواصفات السكن التي تبحث عنها، ونظام سَكَن الذكي سيبحث وينبهك فوراً على موبايلك أول ما ينزل إعلان يطابق شروطك مباشرة.
           </p>
@@ -105,10 +105,10 @@ export default function WantedRequestsPage() {
 
         <button
           onClick={handleOpenNewRequest}
-          className="px-5 py-3 bg-amber-500 hover:bg-amber-400 text-[#0F2942] font-black rounded-xl shadow transition flex items-center gap-2 text-xs sm:text-sm shrink-0"
+          className="w-full sm:w-auto px-4 sm:px-5 py-2.5 sm:py-3 bg-amber-500 hover:bg-amber-400 text-[#0F2942] font-black rounded-xl shadow transition flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm shrink-0"
         >
-          <PlusCircle className="w-4 h-4" />
-          تسجيل طلب سكن جديد
+          <PlusCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          <span>تسجيل طلب سكن جديد</span>
         </button>
       </div>
 

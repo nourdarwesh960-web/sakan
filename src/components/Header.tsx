@@ -30,14 +30,14 @@ export default function Header() {
           {/* Logo & Tagline */}
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 rounded-xl bg-[#0F2942] flex items-center justify-center text-white font-bold text-xl shadow-sm group-hover:bg-[#0A3A40] transition">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#0F2942] flex items-center justify-center text-white font-bold text-base sm:text-xl shadow-xs group-hover:bg-[#0A3A40] transition">
                 سَ
               </div>
               <div className="flex flex-col">
-                <span className="text-2xl font-black tracking-tight text-[#0F2942] group-hover:text-[#0A3A40] transition">
+                <span className="text-xl sm:text-2xl font-black tracking-tight text-[#0F2942] group-hover:text-[#0A3A40] transition">
                   سَكَن
                 </span>
-                <span className="text-[10px] text-amber-700 font-medium -mt-1">
+                <span className="text-[9px] sm:text-[10px] text-amber-700 font-medium -mt-1">
                   بدون عمولات سماسرة
                 </span>
               </div>
@@ -138,16 +138,17 @@ export default function Header() {
           <div className="flex md:hidden items-center gap-2">
             <Link
               href="/my-listings/new"
-              className="px-2.5 py-1.5 text-xs font-semibold text-white bg-[#0F2942] rounded-lg shadow-sm"
+              className="px-2.5 py-1 text-xs font-semibold text-white bg-[#0F2942] rounded-lg shadow-xs flex items-center gap-1"
             >
-              اعرض سكنك
+              <PlusCircle className="w-3.5 h-3.5" />
+              <span>اعرض سكنك</span>
             </Link>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-stone-600 hover:text-stone-900 rounded-lg focus:outline-none"
+              className="p-1.5 text-stone-600 hover:text-stone-900 rounded-lg focus:outline-none"
               aria-label="القائمة الرئيسية"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
 
@@ -156,46 +157,46 @@ export default function Header() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-stone-200 bg-white px-4 pt-3 pb-6 space-y-2">
+        <div className="md:hidden border-t border-stone-200 bg-white px-4 pt-3 pb-6 space-y-1.5">
           <Link
             href="/listings"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-stone-800 hover:bg-stone-100 text-sm font-medium"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-stone-800 hover:bg-stone-100 text-xs sm:text-sm font-medium"
           >
-            <Search className="w-4 h-4 text-stone-500" />
-            تصفح السكن
+            <Search className="w-3.5 h-3.5 text-stone-500" />
+            <span>تصفح السكن</span>
           </Link>
           <Link
             href="/wanted-requests"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-stone-800 hover:bg-stone-100 text-sm font-medium"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-stone-800 hover:bg-stone-100 text-xs sm:text-sm font-medium"
           >
-            <Compass className="w-4 h-4 text-amber-600" />
-            دوّرلي على سكن
+            <Compass className="w-3.5 h-3.5 text-amber-600" />
+            <span>دوّرلي على سكن</span>
           </Link>
           <Link
             href="/messages"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-stone-800 hover:bg-stone-100 text-sm font-medium"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-stone-800 hover:bg-stone-100 text-xs sm:text-sm font-medium"
           >
-            <MessageSquare className="w-4 h-4 text-stone-500" />
-            المحادثات الخاصة
+            <MessageSquare className="w-3.5 h-3.5 text-stone-500" />
+            <span>المحادثات الخاصة</span>
           </Link>
           <Link
             href="/notifications"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-stone-800 hover:bg-stone-100 text-sm font-medium"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-stone-800 hover:bg-stone-100 text-xs sm:text-sm font-medium"
           >
-            <Bell className="w-4 h-4 text-stone-500" />
-            الإشعارات
+            <Bell className="w-3.5 h-3.5 text-stone-500" />
+            <span>الإشعارات</span>
           </Link>
           <Link
             href="/safety"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-stone-800 hover:bg-stone-100 text-sm font-medium"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-stone-800 hover:bg-stone-100 text-xs sm:text-sm font-medium"
           >
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            ميثاق الأمان وبدون عمولات
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+            <span>ميثاق الأمان وبدون عمولات</span>
           </Link>
           <div className="pt-2 border-t border-stone-100 flex flex-col gap-2">
             {isAuthenticated ? (
