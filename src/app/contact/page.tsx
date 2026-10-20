@@ -34,10 +34,16 @@ export default function ContactPage() {
           
           <div className="space-y-4 text-xs sm:text-sm text-stone-300">
             <div className="flex items-start gap-3">
-              <Mail className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+              <Phone className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
               <div>
-                <span className="block font-bold text-white">البريد الإلكتروني:</span>
-                <span dir="ltr">support@sakan.eg</span>
+                <span className="block font-bold text-white">رقم الهاتف والتواصل:</span>
+                <a 
+                  href="tel:01062127372" 
+                  className="text-amber-400 hover:text-amber-300 font-bold text-sm tracking-wide block mt-0.5" 
+                  dir="ltr"
+                >
+                  01062127372
+                </a>
               </div>
             </div>
 
@@ -89,14 +95,14 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-stone-700 block mb-1">الهاتف أو البريد</label>
+                  <label className="text-xs font-bold text-stone-700 block mb-1">رقم الهاتف للتواصل</label>
                   <input
-                    type="text"
+                    type="tel"
                     required
                     dir="ltr"
                     value={emailOrPhone}
                     onChange={(e) => setEmailOrPhone(e.target.value)}
-                    placeholder="010xxxxxxx أو name@example.com"
+                    placeholder="010xxxxxxx"
                     className="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-xs text-right focus:outline-none"
                   />
                 </div>

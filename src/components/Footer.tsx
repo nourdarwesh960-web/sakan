@@ -104,8 +104,18 @@ export default function Footer() {
                   مركز خدمة المستخدمين
                 </Link>
               </li>
-              <li className="pt-2 text-xs text-stone-400 leading-normal">
-                مواعيد الدعم الفني: يومياً من ٩ ص إلى ١٠ م بتوقيت القاهرة
+              <li className="pt-1">
+                <a 
+                  href="tel:01062127372" 
+                  className="inline-flex items-center gap-1.5 text-amber-400 hover:text-amber-300 font-bold text-xs" 
+                  dir="ltr"
+                >
+                  <PhoneCall className="w-3.5 h-3.5" />
+                  <span>01062127372</span>
+                </a>
+              </li>
+              <li className="pt-1 text-xs text-stone-400 leading-normal">
+                مواعيد الدعم: يومياً من ٩ ص إلى ١٠ م بتوقيت القاهرة
               </li>
             </ul>
           </div>
