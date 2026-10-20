@@ -19,10 +19,14 @@ import {
 import { EGYPT_GOVERNORATES, HousingType, EligibleOccupants, WantedRequest } from '@/types/database';
 import { HOUSING_TYPE_LABELS, OCCUPANT_LABELS, formatCurrencyEGP, formatDateArabic } from '@/lib/utils';
 import { createWantedRequest } from '@/lib/data-service';
+import { useAuth } from '@/lib/use-auth';
+import RequireAuthModal from '@/components/RequireAuthModal';
 
 export default function WantedRequestsPage() {
+  const { isAuthenticated, user } = useAuth();
   const [requests, setRequests] = useState<WantedRequest[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   
   // New request fields
   const [governorate, setGovernorate] = useState('القاهرة');
@@ -36,6 +40,14 @@ export default function WantedRequestsPage() {
   const [additionalRequirements, setAdditionalRequirements] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successNotice, setSuccessNotice] = useState(false);
+
+  const handleOpenNewRequest = () => {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+    setShowModal(true);
+  };
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,7 +104,7 @@ export default function WantedRequestsPage() {
         </div>
 
         <button
-          onClick={() => setShowModal(true)}
+          onClick={handleOpenNewRequest}
           className="px-5 py-3 bg-amber-500 hover:bg-amber-400 text-[#0F2942] font-black rounded-xl shadow transition flex items-center gap-2 text-xs sm:text-sm shrink-0"
         >
           <PlusCircle className="w-4 h-4" />
@@ -122,7 +134,7 @@ export default function WantedRequestsPage() {
               سجّل متطلبات السكن والميزانية لتتلقى إشعارات فورية عند توفر سكن مناسب لك.
             </p>
             <button
-              onClick={() => setShowModal(true)}
+              onClick={handleOpenNewRequest}
               className="px-4 py-2 bg-[#0F2942] text-white text-xs font-bold rounded-xl"
             >
               تسجيل طلبك الآن
@@ -346,6 +358,15 @@ export default function WantedRequestsPage() {
           </div>
         </div>
       )}
+
+      {/* Require Auth Modal */}
+      <RequireAuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        title="تسجيل الدخول مطلوب لتسجيل طلب سكن"
+        description="لحفظ رغباتك وتفضيلات السكن وتلقي التنبيهات الفورية الخاصة بحسابك، يرجى تسجيل الدخول أو إنشاء حساب جديد مجاناً."
+        redirectUrl="/wanted-requests"
+      />
 
     </div>
   );

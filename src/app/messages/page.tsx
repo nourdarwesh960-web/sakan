@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Conversation } from '@/types/database';
 import { formatDateArabic } from '@/lib/utils';
+import AuthGuard from '@/components/AuthGuard';
 
 export default function MessagesListPage() {
   const [conversations] = useState<Conversation[]>([]);
@@ -27,7 +28,8 @@ export default function MessagesListPage() {
   });
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+    <AuthGuard fallbackMessage="يجب تسجيل الدخول لعرض مراسلاتك والتواصل في الشات المباشر مع أصحاب السكن." redirectUrl="/messages">
+      <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stone-200">
@@ -125,7 +127,7 @@ export default function MessagesListPage() {
           ))
         )}
       </div>
-
-    </div>
+      </div>
+    </AuthGuard>
   );
 }

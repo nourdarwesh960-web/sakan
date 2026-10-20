@@ -17,6 +17,7 @@ import { Listing } from '@/types/database';
 import { formatCurrencyEGP, formatDateArabic, HOUSING_TYPE_LABELS, STATUS_LABELS } from '@/lib/utils';
 
 import { getMyListings } from '@/lib/data-service';
+import AuthGuard from '@/components/AuthGuard';
 
 export default function MyListingsPage() {
   const [listings, setListings] = useState<Listing[]>([]);
@@ -60,7 +61,11 @@ export default function MyListingsPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
+    <AuthGuard
+      fallbackMessage="يجب تسجيل الدخول لعرض وإدارة إعلانات السكن الخاصة بك."
+      redirectUrl="/my-listings"
+    >
+      <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stone-200">
@@ -184,5 +189,6 @@ export default function MyListingsPage() {
       </div>
 
     </div>
+    </AuthGuard>
   );
 }

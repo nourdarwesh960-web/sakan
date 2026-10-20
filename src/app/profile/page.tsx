@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   User, 
@@ -17,8 +17,11 @@ import {
   AlertTriangle 
 } from 'lucide-react';
 import { EGYPT_GOVERNORATES } from '@/types/database';
+import { useAuth } from '@/lib/use-auth';
+import AuthGuard from '@/components/AuthGuard';
 
 export default function ProfilePage() {
+  const { user, updateProfile } = useAuth();
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -35,14 +38,28 @@ export default function ProfilePage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirmed, setDeleteConfirmed] = useState(false);
 
+  useEffect(() => {
+    if (user) {
+      if (user.full_name) setFullName(user.full_name);
+      if (user.phone) setPhone(user.phone);
+      if (user.email) setEmail(user.email);
+    }
+  }, [user]);
+
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+    updateProfile({
+      full_name: fullName,
+      phone: phone,
+      email: email,
+    });
     setSavedSuccess(true);
     setTimeout(() => setSavedSuccess(false), 3000);
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <AuthGuard fallbackMessage="يجب تسجيل الدخول لإدارة بياناتك وملفك الشخصي." redirectUrl="/profile">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       
       {/* Profile Header */}
       <div className="bg-white rounded-3xl border border-stone-200 p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6 shadow-xs">
@@ -301,5 +318,6 @@ export default function ProfilePage() {
       )}
 
     </div>
+    </AuthGuard>
   );
 }

@@ -1,14 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ShieldCheck, Phone, Lock, User, Mail, ArrowLeft, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { normalizeEgyptianPhone } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
+import { setStoredUser, AuthUser } from '@/lib/auth-service';
 
-export default function SignUpPage() {
+function SignUpForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get('redirect');
+
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -52,8 +56,6 @@ export default function SignUpPage() {
 
     try {
       const supabase = createClient();
-      
-      // If email is provided, sign up via email/password, otherwise phone/password
       const userIdentifier = email || `${phoneResult.normalized.replace('+', '')}@phone.sakan.eg`;
       
       const { data, error } = await supabase.auth.signUp({
@@ -71,16 +73,34 @@ export default function SignUpPage() {
       if (error) {
         setFormError(error.message);
       } else {
-        setSuccessMessage('تم إنشاء الحساب بنجاح! جاري تحويلك إلى خطوة الإعداد...');
+        const authUser: AuthUser = {
+          id: data.user?.id || `user-${Date.now()}`,
+          full_name: fullName.trim(),
+          phone: phoneResult.normalized,
+          email: email || undefined,
+          role_preference: rolePreference,
+        };
+        setStoredUser(authUser);
+
+        setSuccessMessage('تم إنشاء الحساب بنجاح! جاري تحويلك...');
         setTimeout(() => {
-          router.push('/onboarding');
-        }, 1200);
+          router.push(redirectUrl || '/onboarding');
+        }, 1000);
       }
     } catch {
-      // In local preview mode when credentials are unset, simulate seamless local onboarding
-      setSuccessMessage('تم إنشاء الحساب في وضع المعاينة المحلي!');
+      // Local fallback
+      const authUser: AuthUser = {
+        id: `user-${Date.now()}`,
+        full_name: fullName.trim(),
+        phone: phoneResult.normalized,
+        email: email || undefined,
+        role_preference: rolePreference,
+      };
+      setStoredUser(authUser);
+
+      setSuccessMessage('تم إنشاء الحساب بنجاح!');
       setTimeout(() => {
-        router.push('/onboarding');
+        router.push(redirectUrl || '/onboarding');
       }, 1000);
     } finally {
       setIsSubmitting(false);
@@ -88,170 +108,194 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-6 sm:p-8 rounded-3xl border border-stone-200 shadow-xl">
-        
-        {/* Brand and Title */}
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#0F2942] text-white font-bold text-2xl shadow-sm mb-2">
-            سَ
+    <div className="max-w-md w-full space-y-8 bg-white p-6 sm:p-8 rounded-3xl border border-stone-200 shadow-xl">
+      {/* Brand and Title */}
+      <div className="text-center space-y-2">
+        <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#0F2942] text-white font-bold text-2xl shadow-sm mb-2">
+          سَ
+        </div>
+        <h2 className="text-2xl font-black text-[#0F2942]">إنشاء حساب جديد في سَكَن</h2>
+        <p className="text-xs sm:text-sm text-stone-500">
+          انضم لمنصة السكن المباشر الأولى في مصر بدون أي عمولات
+        </p>
+      </div>
+
+      {redirectUrl && (
+        <div className="bg-amber-50 border border-amber-200 text-amber-900 p-3 rounded-2xl text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+          <span>أنشئ حسابك الآن للمتابعة وإتمام العملية مباشرة.</span>
+        </div>
+      )}
+
+      {formError && (
+        <div className="bg-rose-50 border border-rose-200 text-rose-800 p-3 rounded-xl text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+          <span>{formError}</span>
+        </div>
+      )}
+
+      {successMessage && (
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-xl text-xs flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+          <span>{successMessage}</span>
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Full Name */}
+        <div>
+          <label className="text-xs font-bold text-stone-700 block mb-1">الاسم بالكامل</label>
+          <div className="relative">
+            <input
+              type="text"
+              required
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="مثال: يوسف أحمد"
+              className="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2.5 pl-9 text-sm focus:ring-2 focus:ring-[#0F2942] focus:outline-none"
+            />
+            <User className="w-4 h-4 text-stone-400 absolute left-3 top-3.5" />
           </div>
-          <h2 className="text-2xl font-black text-[#0F2942]">إنشاء حساب جديد في سَكَن</h2>
-          <p className="text-xs sm:text-sm text-stone-500">
-            انضم لمنصة السكن المباشر الأولى في مصر بدون عمولات سماسرة
-          </p>
         </div>
 
-        {/* Feedback Alerts */}
-        {formError && (
-          <div className="bg-rose-50 border border-rose-200 text-rose-800 p-3 rounded-xl text-xs flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
-            <span>{formError}</span>
+        {/* Egyptian Phone Number */}
+        <div>
+          <label className="text-xs font-bold text-stone-700 block mb-1">
+            رقم الهاتف المصري
+          </label>
+          <div className="relative">
+            <input
+              type="tel"
+              required
+              dir="ltr"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              onBlur={handlePhoneBlur}
+              placeholder="01012345678"
+              className={`w-full bg-stone-50 border rounded-xl px-3 py-2.5 pl-9 text-sm text-right focus:outline-none focus:ring-2 ${
+                phoneError ? 'border-rose-400 focus:ring-rose-500' : 'border-stone-300 focus:ring-[#0F2942]'
+              }`}
+            />
+            <Phone className="w-4 h-4 text-stone-400 absolute left-3 top-3.5" />
           </div>
-        )}
+          {phoneError ? (
+            <p className="text-[11px] text-rose-600 mt-1">{phoneError}</p>
+          ) : (
+            <p className="text-[10px] text-stone-400 mt-1">يُقبل أرقام فودافون، أورنج، اتصالات، أو وي</p>
+          )}
+        </div>
 
-        {successMessage && (
-          <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-xl text-xs flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>{successMessage}</span>
+        {/* Optional Email */}
+        <div>
+          <label className="text-xs font-bold text-stone-700 block mb-1">
+            البريد الإلكتروني <span className="text-stone-400 font-normal">(اختياري)</span>
+          </label>
+          <div className="relative">
+            <input
+              type="email"
+              dir="ltr"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="name@example.com"
+              className="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2.5 pl-9 text-sm text-right focus:ring-2 focus:ring-[#0F2942] focus:outline-none"
+            />
+            <Mail className="w-4 h-4 text-stone-400 absolute left-3 top-3.5" />
           </div>
-        )}
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          
-          {/* Role Preference Select */}
-          <div>
-            <label className="text-xs font-bold text-stone-700 block mb-1.5">
-              هدفك الأساسي من الانضمام:
-            </label>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => setRolePreference('seeker')}
-                className={`py-2 px-3 text-xs font-bold rounded-xl border text-center transition ${
-                  rolePreference === 'seeker'
-                    ? 'bg-[#0F2942] text-white border-[#0F2942]'
-                    : 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100'
-                }`}
-              >
-                بدور على سكن
-              </button>
-              <button
-                type="button"
-                onClick={() => setRolePreference('provider')}
-                className={`py-2 px-3 text-xs font-bold rounded-xl border text-center transition ${
-                  rolePreference === 'provider'
-                    ? 'bg-[#0F2942] text-white border-[#0F2942]'
-                    : 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100'
-                }`}
-              >
-                عايز أعرض سكن
-              </button>
-            </div>
-            <p className="text-[10px] text-stone-400 mt-1">يمكنك البحث وعرض السكن في أي وقت لاحقاً.</p>
-          </div>
-
-          {/* Full Name */}
-          <div>
-            <label className="text-xs font-bold text-stone-700 block mb-1">الاسم بالكامل</label>
-            <div className="relative">
-              <input
-                type="text"
-                required
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="مثال: أحمد محمد علي"
-                className="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2.5 pl-9 text-sm focus:ring-2 focus:ring-[#0F2942] focus:outline-none"
-              />
-              <User className="w-4 h-4 text-stone-400 absolute left-3 top-3.5" />
-            </div>
-          </div>
-
-          {/* Egyptian Phone Number */}
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="text-xs font-bold text-stone-700 block">رقم الهاتف المحمول (مصر)</label>
-              <span className="text-[10px] text-stone-400">010 / 011 / 012 / 015</span>
-            </div>
-            <div className="relative">
-              <input
-                type="tel"
-                required
-                dir="ltr"
-                value={phone}
-                onBlur={handlePhoneBlur}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="01012345678"
-                className={`w-full bg-stone-50 border ${
-                  phoneError ? 'border-rose-400' : 'border-stone-300'
-                } rounded-xl px-3 py-2.5 pl-9 text-sm text-right focus:ring-2 focus:ring-[#0F2942] focus:outline-none`}
-              />
-              <Phone className="w-4 h-4 text-stone-400 absolute left-3 top-3.5" />
-            </div>
-            {phoneError && <p className="text-[11px] text-rose-600 mt-1">{phoneError}</p>}
-          </div>
-
-          {/* Optional Email */}
-          <div>
-            <label className="text-xs font-bold text-stone-700 block mb-1">
-              البريد الإلكتروني <span className="font-normal text-stone-400">(اختياري)</span>
-            </label>
-            <div className="relative">
-              <input
-                type="email"
-                dir="ltr"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@example.com"
-                className="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2.5 pl-9 text-sm text-right focus:ring-2 focus:ring-[#0F2942] focus:outline-none"
-              />
-              <Mail className="w-4 h-4 text-stone-400 absolute left-3 top-3.5" />
-            </div>
-          </div>
-
-          {/* Password */}
-          <div>
-            <label className="text-xs font-bold text-stone-700 block mb-1">كلمة المرور</label>
-            <div className="relative">
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="٨ خانات على الأقل"
-                className="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2.5 pl-9 text-sm focus:ring-2 focus:ring-[#0F2942] focus:outline-none"
-              />
-              <Lock className="w-4 h-4 text-stone-400 absolute left-3 top-3.5" />
-            </div>
-          </div>
-
-          {/* Submit CTA */}
-          <div className="pt-2">
+        {/* Initial Role Preference */}
+        <div>
+          <label className="text-xs font-bold text-stone-700 block mb-1.5">أنا هنا لـ:</label>
+          <div className="grid grid-cols-3 gap-2 text-center text-xs">
             <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full py-3 bg-[#0F2942] hover:bg-[#0A3A40] text-white font-bold rounded-xl shadow transition disabled:opacity-50 text-sm flex items-center justify-center gap-2"
+              type="button"
+              onClick={() => setRolePreference('seeker')}
+              className={`py-2 px-1 rounded-xl border font-bold transition ${
+                rolePreference === 'seeker'
+                  ? 'bg-[#0F2942] text-white border-[#0F2942]'
+                  : 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100'
+              }`}
             >
-              {isSubmitting ? 'جاري إنشاء الحساب...' : 'إنشاء الحساب مجاناً'}
-              <ArrowLeft className="w-4 h-4" />
+              بدور على سكن
+            </button>
+            <button
+              type="button"
+              onClick={() => setRolePreference('provider')}
+              className={`py-2 px-1 rounded-xl border font-bold transition ${
+                rolePreference === 'provider'
+                  ? 'bg-[#0F2942] text-white border-[#0F2942]'
+                  : 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100'
+              }`}
+            >
+              عايز أعرض سكن
+            </button>
+            <button
+              type="button"
+              onClick={() => setRolePreference('both')}
+              className={`py-2 px-1 rounded-xl border font-bold transition ${
+                rolePreference === 'both'
+                  ? 'bg-[#0F2942] text-white border-[#0F2942]'
+                  : 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100'
+              }`}
+            >
+              الاثنين معاً
             </button>
           </div>
-
-          {/* Terms notice */}
-          <p className="text-[11px] text-stone-400 text-center leading-relaxed">
-            بإنشاء حساب، فإنك توافق على <Link href="/terms" className="underline hover:text-stone-700">شروط الاستخدام</Link> و <Link href="/privacy" className="underline hover:text-stone-700">سياسة الخصوصية</Link> وميثاق منع العمولات.
-          </p>
-
-        </form>
-
-        <div className="text-center pt-4 border-t border-stone-100 text-xs text-stone-600">
-          لديك حساب بالفعل؟{' '}
-          <Link href="/login" className="font-bold text-[#0F2942] hover:underline">
-            تسجيل الدخول
-          </Link>
         </div>
 
+        {/* Password */}
+        <div>
+          <label className="text-xs font-bold text-stone-700 block mb-1">كلمة المرور</label>
+          <div className="relative">
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="٨ خانات على الأقل"
+              className="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2.5 pl-9 text-sm focus:ring-2 focus:ring-[#0F2942] focus:outline-none"
+            />
+            <Lock className="w-4 h-4 text-stone-400 absolute left-3 top-3.5" />
+          </div>
+        </div>
+
+        {/* Submit CTA */}
+        <div className="pt-2">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full py-3 bg-[#0F2942] hover:bg-[#0A3A40] text-white font-bold rounded-xl shadow transition disabled:opacity-50 text-sm flex items-center justify-center gap-2"
+          >
+            {isSubmitting ? 'جاري إنشاء الحساب...' : 'إنشاء الحساب مجاناً'}
+            <ArrowLeft className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Terms notice */}
+        <p className="text-[11px] text-stone-400 text-center leading-relaxed">
+          بإنشاء حساب، فإنك توافق على <Link href="/terms" className="underline hover:text-stone-700">شروط الاستخدام</Link> و <Link href="/privacy" className="underline hover:text-stone-700">سياسة الخصوصية</Link> وميثاق منع العمولات.
+        </p>
+      </form>
+
+      <div className="text-center pt-4 border-t border-stone-100 text-xs text-stone-600">
+        لديك حساب بالفعل؟{' '}
+        <Link
+          href={`/login${redirectUrl ? `?redirect=${encodeURIComponent(redirectUrl)}` : ''}`}
+          className="font-bold text-[#0F2942] hover:underline"
+        >
+          تسجيل الدخول
+        </Link>
       </div>
+    </div>
+  );
+}
+
+export default function SignUpPage() {
+  return (
+    <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <Suspense fallback={<div className="text-stone-400 text-xs">جاري التحميل...</div>}>
+        <SignUpForm />
+      </Suspense>
     </div>
   );
 }

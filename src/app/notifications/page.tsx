@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { NotificationItem, NotificationType } from '@/types/database';
 import { formatDateArabic } from '@/lib/utils';
+import AuthGuard from '@/components/AuthGuard';
 
 export default function NotificationsCenterPage() {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
@@ -46,7 +47,8 @@ export default function NotificationsCenterPage() {
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+    <AuthGuard fallbackMessage="يجب تسجيل الدخول لعرض إشعارات حسابك ومتابعة التنبيهات." redirectUrl="/notifications">
+      <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
       
       {/* Header */}
       <div className="flex items-center justify-between pb-4 border-b border-stone-200">
@@ -123,5 +125,6 @@ export default function NotificationsCenterPage() {
       </div>
 
     </div>
+    </AuthGuard>
   );
 }

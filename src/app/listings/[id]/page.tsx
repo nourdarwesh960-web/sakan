@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { getListingById, getRelatedListings } from '@/lib/data-service';
 import ListingCard from '@/components/ListingCard';
+import ListingContactCard from '@/components/ListingContactCard';
 import { 
   formatCurrencyEGP, 
   formatDateArabic, 
@@ -249,77 +250,9 @@ export default async function ListingDetailsPage({ params }: ListingDetailsPageP
 
         </div>
 
-        {/* Right Column: Provider & Actions Card */}
+        {/* Right Column: Provider & Actions Card (Guarded with Auth) */}
         <div className="space-y-6">
-          
-          <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-6 sticky top-24">
-            
-            {/* Provider Public Profile */}
-            <div className="space-y-3">
-              <span className="text-xs text-stone-400 font-semibold block">صاحب الإعلان</span>
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-[#0F2942] text-white flex items-center justify-center font-bold text-lg">
-                  {listing.owner?.full_name ? listing.owner.full_name[0] : 'س'}
-                </div>
-                <div>
-                  <h4 className="font-bold text-stone-900 text-sm sm:text-base flex items-center gap-1.5">
-                    {listing.owner?.full_name || 'صاحب السكن'}
-                    <span className="bg-emerald-100 text-emerald-800 text-[10px] px-1.5 py-0.5 rounded font-bold">
-                      موثق
-                    </span>
-                  </h4>
-                  <p className="text-xs text-stone-500">
-                    عضو في سَكَن • مباشر بدون وسيط
-                  </p>
-                </div>
-              </div>
-
-              {listing.owner?.bio && (
-                <p className="text-xs text-stone-600 bg-stone-50 p-2.5 rounded-xl leading-relaxed">
-                  "{listing.owner.bio}"
-                </p>
-              )}
-            </div>
-
-            {/* Direct Communication Actions */}
-            <div className="space-y-3 pt-2 border-t border-stone-100">
-              <Link
-                href={`/messages?listing_id=${listing.id}`}
-                className="w-full py-3 bg-[#0F2942] hover:bg-[#0A3A40] text-white font-bold rounded-xl shadow transition flex items-center justify-center gap-2 text-sm"
-              >
-                <MessageSquare className="w-4 h-4" />
-                تواصل في الشات الخاص
-              </Link>
-
-              {/* Optional Phone Reveal */}
-              {listing.show_phone_publicly && listing.owner?.phone ? (
-                <a
-                  href={`tel:${listing.owner.phone}`}
-                  className="w-full py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold rounded-xl transition flex items-center justify-center gap-2 text-xs"
-                >
-                  <Phone className="w-4 h-4 text-emerald-600" />
-                  اتصال: {listing.owner.phone}
-                </a>
-              ) : (
-                <div className="text-center text-[11px] text-stone-400 flex items-center justify-center gap-1">
-                  <span>الهاتف محمي • التواصل الأولي عبر الشات</span>
-                </div>
-              )}
-            </div>
-
-            {/* Report Listing */}
-            <div className="pt-3 border-t border-stone-100">
-              <Link
-                href={`/complaints/new?listing_id=${listing.id}&reported_user_id=${listing.owner_id}`}
-                className="text-xs text-stone-500 hover:text-rose-600 flex items-center justify-center gap-1.5 transition py-1"
-              >
-                <Flag className="w-3.5 h-3.5" />
-                الإبلاغ عن إعلان مخالف أو سمسار
-              </Link>
-            </div>
-
-          </div>
-
+          <ListingContactCard listing={listing} />
         </div>
 
       </div>

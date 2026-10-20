@@ -19,10 +19,13 @@ import {
 } from 'lucide-react';
 import { Message } from '@/types/database';
 import { updateListingStatus } from '@/lib/data-service';
+import { useAuth } from '@/lib/use-auth';
+import AuthGuard from '@/components/AuthGuard';
 
 export default function ActiveConversationPage() {
   const params = useParams();
   const conversationId = params.conversationId as string;
+  const { user } = useAuth();
 
   const [messages, setMessages] = useState<Message[]>([]);
 
@@ -49,7 +52,7 @@ export default function ActiveConversationPage() {
     const newMessage: Message = {
       id: `msg-${Date.now()}`,
       conversation_id: conversationId,
-      sender_id: 'user-current',
+      sender_id: user?.id || 'user-current',
       content: inputText.trim(),
       is_system: false,
       created_at: new Date().toISOString(),
@@ -81,7 +84,8 @@ export default function ActiveConversationPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 flex flex-col h-[82vh]">
+    <AuthGuard fallbackMessage="يجب تسجيل الدخول للوصول إلى هذه المحادثة ومراسلة الطرف الآخر." redirectUrl={`/messages/${conversationId}`}>
+      <div className="max-w-4xl mx-auto px-4 py-6 flex flex-col h-[82vh]">
       
       {/* Top Header */}
       <div className="bg-white rounded-2xl border border-stone-200 p-4 flex flex-wrap items-center justify-between gap-4 shadow-xs shrink-0">
@@ -329,5 +333,6 @@ export default function ActiveConversationPage() {
       )}
 
     </div>
+    </AuthGuard>
   );
 }

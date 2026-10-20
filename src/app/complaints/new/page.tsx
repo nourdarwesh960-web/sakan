@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { ComplaintCategory } from '@/types/database';
 import { submitComplaint } from '@/lib/data-service';
+import AuthGuard from '@/components/AuthGuard';
 
 function ComplaintForm() {
   const router = useRouter();
@@ -229,8 +230,10 @@ function ComplaintForm() {
 
 export default function NewComplaintPage() {
   return (
-    <React.Suspense fallback={<div className="p-12 text-center text-xs text-stone-500">جاري تحميل نموذج البلاغ...</div>}>
-      <ComplaintForm />
-    </React.Suspense>
+    <AuthGuard fallbackMessage="يجب تسجيل الدخول لتقديم بلاغ رسمي والتحقق من هوية صاحب البلاغ." redirectUrl="/complaints/new">
+      <React.Suspense fallback={<div className="p-12 text-center text-xs text-stone-500">جاري تحميل نموذج البلاغ...</div>}>
+        <ComplaintForm />
+      </React.Suspense>
+    </AuthGuard>
   );
 }

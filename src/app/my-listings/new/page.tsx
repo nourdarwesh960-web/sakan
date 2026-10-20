@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { EGYPT_GOVERNORATES, HousingType, EligibleOccupants, GenderPreference } from '@/types/database';
 import { createListing } from '@/lib/data-service';
+import AuthGuard from '@/components/AuthGuard';
 
 export default function NewListingPage() {
   const router = useRouter();
@@ -174,7 +175,11 @@ export default function NewListingPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
+    <AuthGuard
+      fallbackMessage="يجب تسجيل الدخول بحساب سَكَن أولاً لتتمكن من إضافة وعرض سكنك على المنصة."
+      redirectUrl="/my-listings/new"
+    >
+      <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
       
       {/* Page Title */}
       <div className="space-y-2">
@@ -599,5 +604,6 @@ export default function NewListingPage() {
       </form>
 
     </div>
+    </AuthGuard>
   );
 }
