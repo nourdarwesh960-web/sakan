@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ShieldCheck, Phone, Lock, User, Mail, ArrowLeft, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { normalizeEgyptianPhone } from '@/lib/utils';
-import { createClient } from '@/lib/supabase/client';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 import { setStoredUser, AuthUser } from '@/lib/auth-service';
 
 function SignUpForm() {
@@ -55,39 +55,46 @@ function SignUpForm() {
     setIsSubmitting(true);
 
     try {
-      const supabase = createClient();
-      const userIdentifier = email || `${phoneResult.normalized.replace('+', '')}@phone.sakan.eg`;
-      
-      const { data, error } = await supabase.auth.signUp({
-        email: userIdentifier,
-        password,
-        options: {
-          data: {
-            full_name: fullName,
-            phone: phoneResult.normalized,
-            role_preference: rolePreference,
+      if (isSupabaseConfigured()) {
+        const supabase = createClient();
+        const userIdentifier = email || `${phoneResult.normalized.replace('+', '')}@phone.sakan.eg`;
+        
+        const { data, error } = await supabase.auth.signUp({
+          email: userIdentifier,
+          password,
+          options: {
+            data: {
+              full_name: fullName,
+              phone: phoneResult.normalized,
+              role_preference: rolePreference,
+            },
           },
-        },
-      });
+        });
 
-      if (error) {
-        setFormError(error.message);
-      } else {
-        const authUser: AuthUser = {
-          id: data.user?.id || `user-${Date.now()}`,
-          full_name: fullName.trim(),
-          phone: phoneResult.normalized,
-          email: email || undefined,
-          role_preference: rolePreference,
-        };
-        setStoredUser(authUser);
+        if (error) {
+          setFormError(error.message);
+          setIsSubmitting(false);
+          return;
+        }
 
-        setSuccessMessage('تم إنشاء الحساب بنجاح! جاري تحويلك...');
-        setTimeout(() => {
-          router.push(redirectUrl || '/onboarding');
-        }, 1000);
+        if (data?.user) {
+          const authUser: AuthUser = {
+            id: data.user?.id || `user-${Date.now()}`,
+            full_name: fullName.trim(),
+            phone: phoneResult.normalized,
+            email: email || undefined,
+            role_preference: rolePreference,
+          };
+          setStoredUser(authUser);
+
+          setSuccessMessage('تم إنشاء الحساب بنجاح! جاري تحويلك...');
+          setTimeout(() => {
+            router.push(redirectUrl || '/onboarding');
+          }, 1000);
+          return;
+        }
       }
-    } catch {
+
       // Local fallback
       const authUser: AuthUser = {
         id: `user-${Date.now()}`,
@@ -102,6 +109,8 @@ function SignUpForm() {
       setTimeout(() => {
         router.push(redirectUrl || '/onboarding');
       }, 1000);
+    } catch {
+      setFormError('حدث خطأ أثناء إنشاء الحساب، يرجى المحاولة مرة أخرى');
     } finally {
       setIsSubmitting(false);
     }

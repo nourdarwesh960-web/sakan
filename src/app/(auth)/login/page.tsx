@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Lock, Phone, ArrowLeft, AlertCircle } from 'lucide-react';
 import { normalizeEgyptianPhone } from '@/lib/utils';
-import { createClient } from '@/lib/supabase/client';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 import { setStoredUser, AuthUser } from '@/lib/auth-service';
 
 function LoginForm() {
@@ -24,36 +24,43 @@ function LoginForm() {
     setIsSubmitting(true);
 
     try {
-      const supabase = createClient();
-      let userEmail = identifier.trim();
+      if (isSupabaseConfigured()) {
+        const supabase = createClient();
+        let userEmail = identifier.trim();
 
-      // If user typed a phone number, normalize and map to user format
-      if (!identifier.includes('@')) {
-        const phoneResult = normalizeEgyptianPhone(identifier);
-        if (phoneResult.isValid) {
-          userEmail = `${phoneResult.normalized.replace('+', '')}@phone.sakan.eg`;
+        // If user typed a phone number, normalize and map to user format
+        if (!identifier.includes('@')) {
+          const phoneResult = normalizeEgyptianPhone(identifier);
+          if (phoneResult.isValid) {
+            userEmail = `${phoneResult.normalized.replace('+', '')}@phone.sakan.eg`;
+          }
+        }
+
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: userEmail,
+          password,
+        });
+
+        if (error) {
+          setFormError('بيانات الدخول غير صحيحة، أو أن الحساب غير مسجل بعد');
+          setIsSubmitting(false);
+          return;
+        }
+
+        if (data?.user) {
+          const authUser: AuthUser = {
+            id: data.user.id,
+            full_name: data.user.user_metadata?.full_name || (identifier.includes('@') ? identifier.split('@')[0] : 'مستخدم سَكَن'),
+            phone: data.user.user_metadata?.phone || (!identifier.includes('@') ? identifier : ''),
+            email: data.user.email,
+            role_preference: data.user.user_metadata?.role_preference || 'both',
+          };
+          setStoredUser(authUser);
+          router.push(redirectUrl);
+          return;
         }
       }
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: userEmail,
-        password,
-      });
-
-      if (error) {
-        setFormError('بيانات الدخول غير صحيحة، أو أن الحساب غير مسجل بعد');
-      } else {
-        const authUser: AuthUser = {
-          id: data.user.id,
-          full_name: data.user.user_metadata?.full_name || (identifier.includes('@') ? identifier.split('@')[0] : 'مستخدم سَكَن'),
-          phone: data.user.user_metadata?.phone || (!identifier.includes('@') ? identifier : ''),
-          email: data.user.email,
-          role_preference: data.user.user_metadata?.role_preference || 'both',
-        };
-        setStoredUser(authUser);
-        router.push(redirectUrl);
-      }
-    } catch {
       // Local preview fallback
       const authUser: AuthUser = {
         id: `user-${Date.now()}`,
@@ -64,6 +71,8 @@ function LoginForm() {
       };
       setStoredUser(authUser);
       router.push(redirectUrl);
+    } catch {
+      setFormError('حدث خطأ أثناء تسجيل الدخول، يرجى المحاولة مرة أخرى');
     } finally {
       setIsSubmitting(false);
     }

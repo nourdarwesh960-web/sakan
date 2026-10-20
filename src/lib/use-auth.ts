@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { AuthUser, getStoredUser, setStoredUser, clearStoredUser } from './auth-service';
-import { createClient } from './supabase/client';
+import { createClient, isSupabaseConfigured } from './supabase/client';
 
 export function useAuth() {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -17,26 +17,28 @@ export function useAuth() {
   useEffect(() => {
     refreshUser();
 
-    // Check Supabase Auth session if available
-    try {
-      const supabase = createClient();
-      supabase.auth.getUser().then(({ data }) => {
-        if (data?.user) {
-          const profile: AuthUser = {
-            id: data.user.id,
-            full_name: data.user.user_metadata?.full_name || 'مستخدم سَكَن',
-            phone: data.user.user_metadata?.phone || '',
-            email: data.user.email,
-            role_preference: data.user.user_metadata?.role_preference || 'both',
-          };
-          setStoredUser(profile);
-          setUser(profile);
-        }
-      }).catch(() => {
-        // Fallback to local stored
-      });
-    } catch {
-      // Fallback
+    // Check Supabase Auth session only if real credentials are configured
+    if (isSupabaseConfigured()) {
+      try {
+        const supabase = createClient();
+        supabase.auth.getUser().then(({ data }) => {
+          if (data?.user) {
+            const profile: AuthUser = {
+              id: data.user.id,
+              full_name: data.user.user_metadata?.full_name || 'مستخدم سَكَن',
+              phone: data.user.user_metadata?.phone || '',
+              email: data.user.email,
+              role_preference: data.user.user_metadata?.role_preference || 'both',
+            };
+            setStoredUser(profile);
+            setUser(profile);
+          }
+        }).catch(() => {
+          // Fallback to local stored
+        });
+      } catch {
+        // Fallback
+      }
     }
 
     const handler = () => refreshUser();
@@ -55,11 +57,13 @@ export function useAuth() {
   };
 
   const logoutUser = async () => {
-    try {
-      const supabase = createClient();
-      await supabase.auth.signOut();
-    } catch {
-      // Fallback
+    if (isSupabaseConfigured()) {
+      try {
+        const supabase = createClient();
+        await supabase.auth.signOut();
+      } catch {
+        // Fallback
+      }
     }
     clearStoredUser();
     setUser(null);
