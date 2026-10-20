@@ -24,8 +24,8 @@ export default function SafetyPage() {
           <ShieldCheck className="w-4 h-4 text-emerald-600" />
           <span>ميثاق الأمان وحماية المستأجر</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black text-[#0F2942]">
-          سكنك أقرب. وحقك محفوظ.
+        <h1 className="text-2xl sm:text-4xl font-black text-[#0F2942]">
+          ميثاق الأمان والتعامل المباشر
         </h1>
         <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
           دليلك الشامل للمعاينة الآمنة، وتجنب السماسرة، وحماية نفسك من أي احتيال أثناء البحث عن سكن في مصر.

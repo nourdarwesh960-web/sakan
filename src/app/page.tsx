@@ -318,7 +318,7 @@ export default async function HomePage() {
                 <ShieldCheck className="w-4 h-4 text-amber-400" />
                 ميثاق سَكَن للأمان ومكافحة السماسرة
               </div>
-              <h3 className="text-2xl font-black">سكنك أقرب. وحقك محفوظ.</h3>
+              <h3 className="text-xl sm:text-2xl font-black">تعامل مباشر بأمان وبدون أي عمولات</h3>
               <p className="text-stone-300 text-sm leading-relaxed">
                 منصة سَكَن لا تتقاضى أي عمولة أو نسبة إيجار، وتمنع دخول الوسطاء والسماسرة.
                 إذا طلب منك أي معلن دفع عمولة أو رسوم حجز مسبقة قبل المعاينة، أبلغنا فوراً وسيتم إيقاف حسابه فور التحقق.

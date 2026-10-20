@@ -25,12 +25,6 @@ export default function Footer() {
             <p className="text-stone-300 text-sm leading-relaxed">
               منصة السكن المباشر الأولى في مصر للطلبة والشباب المغتربين. نوصل الباحث عن سكن بصاحب السكن مباشرة، بدون سماسرة وبدون عمولات.
             </p>
-            <div className="pt-2">
-              <div className="inline-flex items-center gap-2 bg-emerald-950/80 border border-emerald-500/30 text-emerald-300 px-3 py-1.5 rounded-lg text-xs font-medium">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>سكنك أقرب. وحقك محفوظ.</span>
-              </div>
-            </div>
           </div>
 
           {/* Governorates */}
