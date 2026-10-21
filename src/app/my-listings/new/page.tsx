@@ -25,10 +25,12 @@ import {
 import { EGYPT_GOVERNORATES, HousingType, EligibleOccupants, GenderPreference } from '@/types/database';
 import { createListing } from '@/lib/data-service';
 import { addNotification } from '@/lib/notification-service';
+import { useAuth } from '@/lib/use-auth';
 import AuthGuard from '@/components/AuthGuard';
 
 export default function NewListingPage() {
   const router = useRouter();
+  const { user } = useAuth();
 
   // Basic Details
   const [title, setTitle] = useState('');
@@ -135,6 +137,7 @@ export default function NewListingPage() {
 
     try {
       const created = await createListing({
+        owner_id: user?.id,
         title,
         description,
         governorate,

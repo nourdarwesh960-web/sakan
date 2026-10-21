@@ -44,6 +44,46 @@ export function initLocalDevData() {
 // Initialize clean data store
 initLocalDevData();
 
+export function generateUUID(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
+const LOCAL_LISTINGS_KEY = 'sakan_local_listings_v1';
+
+export function getLocalListings(): Listing[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem(LOCAL_LISTINGS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveLocalListing(listing: Listing): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const current = getLocalListings();
+    const existingIdx = current.findIndex((l) => l.id === listing.id);
+    if (existingIdx !== -1) {
+      current[existingIdx] = listing;
+    } else {
+      current.unshift(listing);
+    }
+    localStorage.setItem(LOCAL_LISTINGS_KEY, JSON.stringify(current));
+    window.dispatchEvent(new Event('sakan_listings_updated'));
+  } catch (err) {
+    console.error('Failed to save listing locally:', err);
+  }
+}
+
 export interface ListingFilterParams {
   governorate?: string;
   area?: string;
@@ -153,15 +193,27 @@ export async function getListingById(id: string): Promise<Listing | null> {
         .single();
       if (!error && data) return data as Listing;
     } catch {
-      // Fall through to memory
+      // Fall through to local
     }
   }
 
+  // Check memory store
   const found = memoryStore.listings.find((l) => l.id === id);
-  return found || null;
+  if (found) return found;
+
+  // Check client local storage
+  if (typeof window !== 'undefined') {
+    const local = getLocalListings();
+    const foundLocal = local.find((l) => l.id === id);
+    if (foundLocal) return foundLocal;
+  }
+
+  return null;
 }
 
 export async function getMyListings(ownerId?: string): Promise<Listing[]> {
+  let results: Listing[] = [];
+
   if (isSupabaseConfigured()) {
     try {
       const supabase = await createClient();
@@ -173,16 +225,26 @@ export async function getMyListings(ownerId?: string): Promise<Listing[]> {
         query = query.eq('owner_id', ownerId);
       }
       const { data, error } = await query;
-      if (!error && data) return data as Listing[];
+      if (!error && data) {
+        results = data as Listing[];
+      }
     } catch {
-      // Fallback to memory
+      // Fallback
     }
   }
 
-  if (ownerId) {
-    return memoryStore.listings.filter((l) => l.owner_id === ownerId);
+  const memoryList = ownerId ? memoryStore.listings.filter((l) => l.owner_id === ownerId) : memoryStore.listings;
+  const localList = getLocalListings().filter((l) => !ownerId || l.owner_id === ownerId || l.owner_id === 'local-user');
+
+  const combined = [...results, ...memoryList, ...localList];
+  const map = new Map<string, Listing>();
+  for (const item of combined) {
+    if (!map.has(item.id)) {
+      map.set(item.id, item);
+    }
   }
-  return memoryStore.listings;
+
+  return Array.from(map.values());
 }
 
 export async function getRelatedListings(listing: Listing, limit = 3): Promise<Listing[]> {
@@ -195,9 +257,18 @@ export async function getRelatedListings(listing: Listing, limit = 3): Promise<L
 }
 
 export async function createListing(listingData: Partial<Listing>): Promise<Listing> {
+  const listingId = listingData.id || generateUUID();
+  
+  // Ensure owner_id is a valid UUID format
+  let ownerId = listingData.owner_id;
+  const isUUID = ownerId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(ownerId);
+  if (!isUUID) {
+    ownerId = generateUUID();
+  }
+
   const newListing: Listing = {
-    id: `listing-${Date.now()}`,
-    owner_id: listingData.owner_id || 'anonymous-user',
+    id: listingId,
+    owner_id: ownerId!,
     title: listingData.title || '',
     description: listingData.description || '',
     governorate: listingData.governorate || 'القاهرة',
@@ -212,7 +283,7 @@ export async function createListing(listingData: Partial<Listing>): Promise<List
     furnished: listingData.furnished || false,
     available_from: listingData.available_from || new Date().toISOString().split('T')[0],
     amenities: listingData.amenities || [],
-    status: 'published', // default active
+    status: 'published',
     room_occupancy_type: listingData.room_occupancy_type,
     beds_count: listingData.beds_count,
     rooms_count: listingData.rooms_count,
@@ -225,17 +296,49 @@ export async function createListing(listingData: Partial<Listing>): Promise<List
     photos: listingData.photos || [],
   };
 
+  // Always save in memory store and local storage
+  memoryStore.listings.unshift(newListing);
+  saveLocalListing(newListing);
+
   if (isSupabaseConfigured()) {
     try {
       const supabase = await createClient();
-      const { data, error } = await supabase.from('listings').insert(newListing).select().single();
-      if (!error && data) return data as Listing;
+      
+      // Get current authenticated user id to satisfy foreign key
+      const { data: authData } = await supabase.auth.getUser();
+      const realOwnerId = authData?.user?.id || ownerId;
+
+      const { photos, ...dbPayload } = newListing;
+      dbPayload.owner_id = realOwnerId!;
+
+      const { data, error } = await supabase
+        .from('listings')
+        .insert([dbPayload])
+        .select()
+        .single();
+
+      if (!error && data) {
+        // If photos are provided, insert them into listing_photos table
+        if (photos && photos.length > 0) {
+          const photoRecords = photos.map((p, idx) => ({
+            id: generateUUID(),
+            listing_id: data.id,
+            photo_url: p.photo_url,
+            order_index: idx,
+            created_at: new Date().toISOString(),
+          }));
+          await supabase.from('listing_photos').insert(photoRecords);
+        }
+
+        const fullListing = { ...data, photos: photos || [] } as Listing;
+        saveLocalListing(fullListing);
+        return fullListing;
+      }
     } catch {
-      // Fallback to memory
+      // Fallback to local copy
     }
   }
 
-  memoryStore.listings.unshift(newListing);
   return newListing;
 }
 
