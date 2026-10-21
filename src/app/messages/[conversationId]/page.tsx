@@ -20,6 +20,7 @@ import {
 import { Message } from '@/types/database';
 import { updateListingStatus } from '@/lib/data-service';
 import { useAuth } from '@/lib/use-auth';
+import { addNotification } from '@/lib/notification-service';
 import AuthGuard from '@/components/AuthGuard';
 
 export default function ActiveConversationPage() {
@@ -80,6 +81,16 @@ export default function ActiveConversationPage() {
 
     setMessages((prev) => [...prev, systemMsg]);
     setRentedSuccessToast(true);
+
+    // Send real notification
+    await addNotification({
+      userId: user?.id,
+      type: 'listing_status',
+      title: 'تم تأكيد التأجير بنجاح! 🤝',
+      body: 'تم الاتفاق وتحديث حالة الإعلان رسمياً إلى "تم التأجير" وإغلاقه بنجاح.',
+      link: `/messages/${conversationId}`,
+    });
+
     setTimeout(() => setRentedSuccessToast(false), 4000);
   };
 

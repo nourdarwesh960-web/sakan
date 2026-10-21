@@ -19,6 +19,7 @@ import {
 import { EGYPT_GOVERNORATES, HousingType, EligibleOccupants, WantedRequest } from '@/types/database';
 import { HOUSING_TYPE_LABELS, OCCUPANT_LABELS, formatCurrencyEGP, formatDateArabic } from '@/lib/utils';
 import { createWantedRequest } from '@/lib/data-service';
+import { addNotification } from '@/lib/notification-service';
 import { useAuth } from '@/lib/use-auth';
 import RequireAuthModal from '@/components/RequireAuthModal';
 
@@ -69,6 +70,15 @@ export default function WantedRequestsPage() {
       setRequests([created, ...requests]);
       setShowModal(false);
       setSuccessNotice(true);
+
+      await addNotification({
+        userId: user?.id,
+        type: 'match',
+        title: 'تم تسجيل طلب "دوّرلي على سكن"! 🎯',
+        body: `طلب السكن في ${governorate} بميزانية حتى ${budgetMax} ج.م نشط الآن. سنخبرك فور توفر أي سكن يطابقه.`,
+        link: '/wanted-requests',
+      });
+
       setTimeout(() => setSuccessNotice(false), 4000);
     } catch {
       // Handle error

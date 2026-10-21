@@ -3,6 +3,7 @@ import { Cairo } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import AiAssistant from '@/components/AiAssistant';
 
 const cairo = Cairo({
   subsets: ['arabic', 'latin'],
@@ -37,6 +38,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <AiAssistant />
       </body>
     </html>
   );

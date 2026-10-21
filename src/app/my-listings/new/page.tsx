@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { EGYPT_GOVERNORATES, HousingType, EligibleOccupants, GenderPreference } from '@/types/database';
 import { createListing } from '@/lib/data-service';
+import { addNotification } from '@/lib/notification-service';
 import AuthGuard from '@/components/AuthGuard';
 
 export default function NewListingPage() {
@@ -164,6 +165,12 @@ export default function NewListingPage() {
       });
 
       setSuccess(true);
+      await addNotification({
+        type: 'listing_status',
+        title: 'تم نشر إعلانك بنجاح! 🏠',
+        body: `إعلان "${title}" أصبح متاحاً الآن للطلبة والباحثين عن سكن بدون أي عمولة.`,
+        link: `/listings/${created.id}`,
+      });
       setTimeout(() => {
         router.push(`/listings/${created.id}`);
       }, 1500);

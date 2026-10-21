@@ -50,3 +50,12 @@ body {
 a, button {
   transition: all 0.15s ease-in-out;
 }
+
+/* Mobile Ratio & Icon Scaling Optimization */
+@media (max-width: 640px) {
+  /* Ensure icons on phones remain sleek and proportional like PC */
+  nav svg, header svg, footer svg {
+    max-width: 1.15rem;
+    max-height: 1.15rem;
+  }
+}
