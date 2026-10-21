@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Flag, 
@@ -17,10 +17,22 @@ import {
 } from 'lucide-react';
 import { Complaint, ComplaintStatus } from '@/types/database';
 import { formatDateArabic } from '@/lib/utils';
-import { logAdminAction } from '@/lib/data-service';
+import { logAdminAction, getComplaints, updateComplaintStatus } from '@/lib/data-service';
 
 export default function AdminComplaintsPage() {
   const [complaints, setComplaints] = useState<Complaint[]>([]);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const data = await getComplaints();
+        setComplaints(data);
+      } catch {
+        // Fallback
+      }
+    }
+    load();
+  }, []);
 
   const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null);
   const [internalNote, setInternalNote] = useState('');
@@ -36,6 +48,13 @@ export default function AdminComplaintsPage() {
         resolution_notes: resolutionNote || undefined,
         updated_at: new Date().toISOString() 
       } : c))
+    );
+
+    await updateComplaintStatus(
+      selectedComplaint.id,
+      status,
+      resolutionNote || undefined,
+      internalNote || undefined
     );
 
     await logAdminAction(

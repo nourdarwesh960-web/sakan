@@ -84,6 +84,64 @@ export function saveLocalListing(listing: Listing): void {
   }
 }
 
+const LOCAL_COMPLAINTS_KEY = 'sakan_local_complaints_v1';
+
+export function getLocalComplaints(): Complaint[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem(LOCAL_COMPLAINTS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveLocalComplaint(complaint: Complaint): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const current = getLocalComplaints();
+    const existingIdx = current.findIndex((c) => c.id === complaint.id);
+    if (existingIdx !== -1) {
+      current[existingIdx] = complaint;
+    } else {
+      current.unshift(complaint);
+    }
+    localStorage.setItem(LOCAL_COMPLAINTS_KEY, JSON.stringify(current));
+    window.dispatchEvent(new Event('sakan_complaints_updated'));
+  } catch (err) {
+    console.error('Failed to save complaint locally:', err);
+  }
+}
+
+const LOCAL_WANTED_KEY = 'sakan_local_wanted_v1';
+
+export function getLocalWantedRequests(): WantedRequest[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem(LOCAL_WANTED_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveLocalWantedRequest(req: WantedRequest): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const current = getLocalWantedRequests();
+    const existingIdx = current.findIndex((r) => r.id === req.id);
+    if (existingIdx !== -1) {
+      current[existingIdx] = req;
+    } else {
+      current.unshift(req);
+    }
+    localStorage.setItem(LOCAL_WANTED_KEY, JSON.stringify(current));
+    window.dispatchEvent(new Event('sakan_wanted_updated'));
+  } catch (err) {
+    console.error('Failed to save wanted request locally:', err);
+  }
+}
+
 export interface ListingFilterParams {
   governorate?: string;
   area?: string;
@@ -152,8 +210,16 @@ export async function getPublishedListings(filters: ListingFilterParams = {}) {
     }
   }
 
-  // Fallback to memory store
-  let filtered = memoryStore.listings.filter((l) => l.status === 'published');
+  // Fallback to memory store + local storage
+  const localList = typeof window !== 'undefined' ? getLocalListings() : [];
+  const combined = [...memoryStore.listings, ...localList];
+  const uniqueListingsMap = new Map<string, Listing>();
+  for (const item of combined) {
+    if (!uniqueListingsMap.has(item.id)) {
+      uniqueListingsMap.set(item.id, item);
+    }
+  }
+  let filtered = Array.from(uniqueListingsMap.values()).filter((l) => l.status === 'published');
 
   if (governorate) filtered = filtered.filter((l) => l.governorate === governorate);
   if (area) filtered = filtered.filter((l) => l.area.toLowerCase().includes(area.toLowerCase()));
@@ -343,6 +409,17 @@ export async function createListing(listingData: Partial<Listing>): Promise<List
 }
 
 export async function updateListingStatus(id: string, status: Listing['status'], reason?: string): Promise<boolean> {
+  if (typeof window !== 'undefined') {
+    const currentLocal = getLocalListings();
+    const lIdx = currentLocal.findIndex((l) => l.id === id);
+    if (lIdx !== -1) {
+      currentLocal[lIdx].status = status;
+      if (reason) currentLocal[lIdx].rejection_reason = reason;
+      currentLocal[lIdx].updated_at = new Date().toISOString();
+      saveLocalListing(currentLocal[lIdx]);
+    }
+  }
+
   if (isSupabaseConfigured()) {
     try {
       const supabase = await createClient();
@@ -363,33 +440,57 @@ export async function updateListingStatus(id: string, status: Listing['status'],
     memoryStore.listings[idx].updated_at = new Date().toISOString();
     return true;
   }
-  return false;
+  return true;
 }
 
 // WANTED REQUESTS ("دوّرلي على سكن")
 export async function getWantedRequests(userId?: string): Promise<WantedRequest[]> {
+  let list: WantedRequest[] = [];
+
   if (isSupabaseConfigured()) {
     try {
       const supabase = await createClient();
       let query = supabase.from('wanted_requests').select('*');
       if (userId) query = query.eq('user_id', userId);
       const { data, error } = await query.order('created_at', { ascending: false });
-      if (!error && data) return data as WantedRequest[];
+      if (!error && data) {
+        list = data as WantedRequest[];
+      }
     } catch {
       // Fallback
     }
   }
 
-  if (userId) {
-    return memoryStore.wantedRequests.filter((r) => r.user_id === userId);
+  const localList = getLocalWantedRequests();
+  const memoryList = memoryStore.wantedRequests;
+
+  const combined = [...list, ...localList, ...memoryList];
+  const unique = new Map<string, WantedRequest>();
+  for (const r of combined) {
+    if (!unique.has(r.id)) {
+      unique.set(r.id, r);
+    }
   }
-  return memoryStore.wantedRequests;
+
+  let finalRequests = Array.from(unique.values());
+  if (userId) {
+    finalRequests = finalRequests.filter((r) => r.user_id === userId || r.user_id === 'anonymous-user');
+  }
+
+  return finalRequests;
 }
 
 export async function createWantedRequest(request: Partial<WantedRequest>): Promise<WantedRequest> {
+  const reqId = generateUUID();
+  let userId = request.user_id;
+  const isUUID = userId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
+  if (!isUUID) {
+    userId = generateUUID();
+  }
+
   const newReq: WantedRequest = {
-    id: `req-${Date.now()}`,
-    user_id: request.user_id || 'anonymous-user',
+    id: reqId,
+    user_id: userId!,
     housing_type: request.housing_type,
     governorate: request.governorate || 'القاهرة',
     area: request.area,
@@ -405,14 +506,40 @@ export async function createWantedRequest(request: Partial<WantedRequest>): Prom
   };
 
   memoryStore.wantedRequests.unshift(newReq);
+  saveLocalWantedRequest(newReq);
+
+  if (isSupabaseConfigured()) {
+    try {
+      const supabase = await createClient();
+      const { data: authData } = await supabase.auth.getUser();
+      const realUserId = authData?.user?.id || userId;
+
+      const payload = { ...newReq, user_id: realUserId };
+      const { data, error } = await supabase.from('wanted_requests').insert([payload]).select().single();
+      if (!error && data) {
+        saveLocalWantedRequest(data as WantedRequest);
+        return data as WantedRequest;
+      }
+    } catch {
+      // Fallback
+    }
+  }
+
   return newReq;
 }
 
 // COMPLAINTS
 export async function submitComplaint(complaint: Partial<Complaint>): Promise<Complaint> {
+  const complaintId = generateUUID();
+  let reporterId = complaint.reporter_id;
+  const isUUID = reporterId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(reporterId);
+  if (!isUUID) {
+    reporterId = generateUUID();
+  }
+
   const newComplaint: Complaint = {
-    id: `comp-${Date.now()}`,
-    reporter_id: complaint.reporter_id || 'anonymous-reporter',
+    id: complaintId,
+    reporter_id: reporterId!,
     reported_user_id: complaint.reported_user_id,
     listing_id: complaint.listing_id,
     conversation_id: complaint.conversation_id,
@@ -425,15 +552,117 @@ export async function submitComplaint(complaint: Partial<Complaint>): Promise<Co
   };
 
   memoryStore.complaints.unshift(newComplaint);
+  saveLocalComplaint(newComplaint);
+
+  if (isSupabaseConfigured()) {
+    try {
+      const supabase = await createClient();
+      const { data: authData } = await supabase.auth.getUser();
+      const realReporterId = authData?.user?.id || reporterId;
+
+      const { evidence, ...dbPayload } = newComplaint;
+      dbPayload.reporter_id = realReporterId!;
+
+      const { data, error } = await supabase
+        .from('complaints')
+        .insert([dbPayload])
+        .select()
+        .single();
+
+      if (!error && data) {
+        const full = { ...data, evidence: evidence || [] } as Complaint;
+        saveLocalComplaint(full);
+        return full;
+      }
+    } catch {
+      // Fallback
+    }
+  }
+
   return newComplaint;
 }
 
 export async function getComplaints(filter?: { status?: string }): Promise<Complaint[]> {
-  let list = memoryStore.complaints;
-  if (filter?.status) {
-    list = list.filter((c) => c.status === filter.status);
+  let list: Complaint[] = [];
+
+  if (isSupabaseConfigured()) {
+    try {
+      const supabase = await createClient();
+      let query = supabase
+        .from('complaints')
+        .select('*, reporter:profiles(*), listing:listings(*)')
+        .order('created_at', { ascending: false });
+      if (filter?.status) {
+        query = query.eq('status', filter.status);
+      }
+      const { data, error } = await query;
+      if (!error && data) {
+        list = data as Complaint[];
+      }
+    } catch {
+      // Fallback
+    }
   }
-  return list;
+
+  const localList = getLocalComplaints();
+  const memoryList = memoryStore.complaints;
+
+  const combined = [...list, ...localList, ...memoryList];
+  const unique = new Map<string, Complaint>();
+  for (const c of combined) {
+    if (!unique.has(c.id)) {
+      unique.set(c.id, c);
+    }
+  }
+
+  let finalComplaints = Array.from(unique.values());
+  if (filter?.status) {
+    finalComplaints = finalComplaints.filter((c) => c.status === filter.status);
+  }
+
+  return finalComplaints;
+}
+
+export async function updateComplaintStatus(
+  id: string,
+  status: ComplaintStatus,
+  resolutionNotes?: string,
+  internalNotes?: string
+): Promise<boolean> {
+  const updatedData: Partial<Complaint> = {
+    status,
+    resolution_notes: resolutionNotes,
+    internal_notes: internalNotes,
+    updated_at: new Date().toISOString(),
+  };
+
+  if (typeof window !== 'undefined') {
+    const local = getLocalComplaints();
+    const idx = local.findIndex((c) => c.id === id);
+    if (idx !== -1) {
+      local[idx] = { ...local[idx], ...updatedData };
+      saveLocalComplaint(local[idx]);
+    }
+  }
+
+  const memIdx = memoryStore.complaints.findIndex((c) => c.id === id);
+  if (memIdx !== -1) {
+    memoryStore.complaints[memIdx] = { ...memoryStore.complaints[memIdx], ...updatedData };
+  }
+
+  if (isSupabaseConfigured()) {
+    try {
+      const supabase = await createClient();
+      await supabase
+        .from('complaints')
+        .update(updatedData)
+        .eq('id', id);
+    } catch {
+      // Fallback
+    }
+  }
+
+  return true;
 }
 
 // ADMIN METRICS

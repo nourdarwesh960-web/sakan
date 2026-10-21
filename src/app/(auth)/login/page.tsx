@@ -7,6 +7,7 @@ import { Lock, Phone, ArrowLeft, AlertCircle } from 'lucide-react';
 import { normalizeEgyptianPhone } from '@/lib/utils';
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 import { setStoredUser, AuthUser } from '@/lib/auth-service';
+import { authenticateFromRegistry } from '@/lib/user-registry';
 
 function LoginForm() {
   const router = useRouter();
@@ -42,6 +43,14 @@ function LoginForm() {
         });
 
         if (error) {
+          // Check resilient persistent accounts database before giving up
+          const registered = authenticateFromRegistry(identifier, password);
+          if (registered) {
+            setStoredUser(registered);
+            router.push(redirectUrl);
+            return;
+          }
+
           setFormError('بيانات الدخول غير صحيحة، أو أن الحساب غير مسجل بعد');
           setIsSubmitting(false);
           return;
@@ -61,16 +70,15 @@ function LoginForm() {
         }
       }
 
-      // Local preview fallback
-      const authUser: AuthUser = {
-        id: `user-${Date.now()}`,
-        full_name: identifier.includes('@') ? identifier.split('@')[0] : 'مستخدم سَكَن',
-        phone: !identifier.includes('@') ? identifier : '',
-        email: identifier.includes('@') ? identifier : undefined,
-        role_preference: 'both',
-      };
-      setStoredUser(authUser);
-      router.push(redirectUrl);
+      // Check resilient persistent accounts database
+      const registered = authenticateFromRegistry(identifier, password);
+      if (registered) {
+        setStoredUser(registered);
+        router.push(redirectUrl);
+        return;
+      }
+
+      setFormError('بيانات الدخول غير صحيحة، أو أن الحساب غير مسجل بعد');
     } catch {
       setFormError('حدث خطأ أثناء تسجيل الدخول، يرجى المحاولة مرة أخرى');
     } finally {

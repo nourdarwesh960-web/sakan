@@ -16,7 +16,7 @@ import {
 import { Listing } from '@/types/database';
 import { formatCurrencyEGP, formatDateArabic, HOUSING_TYPE_LABELS, STATUS_LABELS } from '@/lib/utils';
 
-import { getMyListings } from '@/lib/data-service';
+import { getMyListings, updateListingStatus } from '@/lib/data-service';
 import AuthGuard from '@/components/AuthGuard';
 
 export default function MyListingsPage() {
@@ -35,29 +35,27 @@ export default function MyListingsPage() {
       }
     }
     load();
+
+    const handler = () => load();
+    window.addEventListener('sakan_listings_updated', handler);
+    return () => window.removeEventListener('sakan_listings_updated', handler);
   }, []);
 
-  const toggleStatus = (id: string) => {
+  const toggleStatus = async (id: string) => {
+    const target = listings.find((l) => l.id === id);
+    if (!target) return;
+    const nextStatus = target.status === 'published' ? 'paused' : 'published';
     setListings(
-      listings.map((l) => {
-        if (l.id === id) {
-          const nextStatus = l.status === 'published' ? 'paused' : 'published';
-          return { ...l, status: nextStatus };
-        }
-        return l;
-      })
+      listings.map((l) => (l.id === id ? { ...l, status: nextStatus } : l))
     );
+    await updateListingStatus(id, nextStatus);
   };
 
-  const markAsRented = (id: string) => {
+  const markAsRented = async (id: string) => {
     setListings(
-      listings.map((l) => {
-        if (l.id === id) {
-          return { ...l, status: 'rented' };
-        }
-        return l;
-      })
+      listings.map((l) => (l.id === id ? { ...l, status: 'rented' } : l))
     );
+    await updateListingStatus(id, 'rented');
   };
 
   return (

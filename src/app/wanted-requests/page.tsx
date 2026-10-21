@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Compass, 
@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { EGYPT_GOVERNORATES, HousingType, EligibleOccupants, WantedRequest } from '@/types/database';
 import { HOUSING_TYPE_LABELS, OCCUPANT_LABELS, formatCurrencyEGP, formatDateArabic } from '@/lib/utils';
-import { createWantedRequest } from '@/lib/data-service';
+import { createWantedRequest, getWantedRequests } from '@/lib/data-service';
 import { addNotification } from '@/lib/notification-service';
 import { useAuth } from '@/lib/use-auth';
 import RequireAuthModal from '@/components/RequireAuthModal';
@@ -26,8 +26,31 @@ import RequireAuthModal from '@/components/RequireAuthModal';
 export default function WantedRequestsPage() {
   const { isAuthenticated, user } = useAuth();
   const [requests, setRequests] = useState<WantedRequest[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    async function loadRequests() {
+      try {
+        const data = await getWantedRequests(user?.id);
+        if (mounted) {
+          setRequests(data);
+        }
+      } catch (err) {
+        console.error('Failed to load wanted requests', err);
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    }
+    loadRequests();
+    return () => {
+      mounted = false;
+    };
+  }, [user?.id]);
   
   // New request fields
   const [governorate, setGovernorate] = useState('القاهرة');
@@ -56,6 +79,7 @@ export default function WantedRequestsPage() {
 
     try {
       const created = await createWantedRequest({
+        user_id: user?.id,
         governorate,
         area: area || undefined,
         housing_type: housingType,

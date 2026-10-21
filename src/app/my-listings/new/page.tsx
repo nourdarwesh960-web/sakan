@@ -23,7 +23,7 @@ import {
   ImagePlus
 } from 'lucide-react';
 import { EGYPT_GOVERNORATES, HousingType, EligibleOccupants, GenderPreference } from '@/types/database';
-import { createListing } from '@/lib/data-service';
+import { createListing, generateUUID } from '@/lib/data-service';
 import { addNotification } from '@/lib/notification-service';
 import { useAuth } from '@/lib/use-auth';
 import AuthGuard from '@/components/AuthGuard';
@@ -159,7 +159,7 @@ export default function NewListingPage() {
         max_occupancy: Number(maxOccupancy),
         show_phone_publicly: showPhonePublicly,
         photos: photoUrls.map((url, i) => ({
-          id: `p-${i}`,
+          id: generateUUID(),
           listing_id: '',
           photo_url: url,
           order_index: i,

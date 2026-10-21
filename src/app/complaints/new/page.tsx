@@ -14,11 +14,13 @@ import {
   Info
 } from 'lucide-react';
 import { ComplaintCategory } from '@/types/database';
-import { submitComplaint } from '@/lib/data-service';
+import { submitComplaint, generateUUID } from '@/lib/data-service';
+import { useAuth } from '@/lib/use-auth';
 import AuthGuard from '@/components/AuthGuard';
 
 function ComplaintForm() {
   const router = useRouter();
+  const { user } = useAuth();
   const searchParams = useSearchParams();
   const listingId = searchParams.get('listing_id') || undefined;
   const conversationId = searchParams.get('conversation_id') || undefined;
@@ -77,13 +79,14 @@ function ComplaintForm() {
 
     try {
       await submitComplaint({
+        reporter_id: user?.id,
         category,
         description: description.trim(),
         listing_id: listingId,
         conversation_id: conversationId,
         reported_user_id: reportedUserId,
         evidence: evidenceUrl ? [{
-          id: 'ev-1',
+          id: generateUUID(),
           complaint_id: '',
           file_url: evidenceUrl,
           file_type: 'image/jpeg',

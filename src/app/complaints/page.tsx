@@ -1,23 +1,33 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ShieldAlert, Flag, PlusCircle, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
 import { Complaint } from '@/types/database';
 import { formatDateArabic } from '@/lib/utils';
+import { getComplaints } from '@/lib/data-service';
 
 export default function ComplaintsHistoryPage() {
-  const [complaints] = useState<Complaint[]>([
-    {
-      id: 'comp-1',
-      reporter_id: 'user-current',
-      category: 'brokerage_commission',
-      description: 'المعلن طلب مبلغ 500 جنيه رسوم معاينة مسبقة قبل رؤية الشقة في الدقي.',
-      status: 'under_review',
-      created_at: '2026-10-15T14:00:00.000Z',
-      updated_at: '2026-10-16T10:00:00.000Z',
+  const [complaints, setComplaints] = useState<Complaint[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadComplaints = async () => {
+    try {
+      const data = await getComplaints();
+      setComplaints(data);
+    } catch {
+      setComplaints([]);
+    } finally {
+      setLoading(false);
     }
-  ]);
+  };
+
+  useEffect(() => {
+    loadComplaints();
+    const handler = () => loadComplaints();
+    window.addEventListener('sakan_complaints_updated', handler);
+    return () => window.removeEventListener('sakan_complaints_updated', handler);
+  }, []);
 
   const STATUS_MAP: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
     submitted: { label: 'تم الاستلام', color: 'bg-stone-100 text-stone-700', icon: <Clock className="w-3.5 h-3.5" /> },
@@ -49,7 +59,12 @@ export default function ComplaintsHistoryPage() {
         </Link>
       </div>
 
-      {complaints.length === 0 ? (
+      {loading ? (
+        <div className="bg-white rounded-2xl border border-stone-200 p-12 text-center max-w-md mx-auto space-y-3">
+          <div className="animate-spin w-8 h-8 border-4 border-rose-600 border-t-transparent rounded-full mx-auto" />
+          <p className="text-xs text-stone-500 font-medium">جاري تحميل البلاغات المسجلة...</p>
+        </div>
+      ) : complaints.length === 0 ? (
         <div className="bg-white rounded-2xl border border-stone-200 p-12 text-center max-w-md mx-auto space-y-3">
           <ShieldAlert className="w-10 h-10 text-stone-300 mx-auto" />
           <h3 className="text-sm font-bold text-stone-800">ليس لديك أي بلاغات مسجلة</h3>

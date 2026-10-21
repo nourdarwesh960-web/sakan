@@ -7,6 +7,7 @@ import { ShieldCheck, Phone, Lock, User, Mail, ArrowLeft, AlertCircle, CheckCirc
 import { normalizeEgyptianPhone } from '@/lib/utils';
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 import { setStoredUser, AuthUser } from '@/lib/auth-service';
+import { registerAccount } from '@/lib/user-registry';
 
 function SignUpForm() {
   const router = useRouter();
@@ -85,6 +86,7 @@ function SignUpForm() {
             email: email || undefined,
             role_preference: rolePreference,
           };
+          registerAccount(authUser, password);
           setStoredUser(authUser);
 
           setSuccessMessage('تم إنشاء الحساب بنجاح! جاري تحويلك...');
@@ -95,7 +97,7 @@ function SignUpForm() {
         }
       }
 
-      // Local fallback
+      // Local persistent fallback
       const authUser: AuthUser = {
         id: `user-${Date.now()}`,
         full_name: fullName.trim(),
@@ -103,6 +105,7 @@ function SignUpForm() {
         email: email || undefined,
         role_preference: rolePreference,
       };
+      registerAccount(authUser, password);
       setStoredUser(authUser);
 
       setSuccessMessage('تم إنشاء الحساب بنجاح!');
